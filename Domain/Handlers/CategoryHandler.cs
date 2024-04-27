@@ -21,10 +21,10 @@ namespace Domain.Handlers
         }
         public IHandleResult Handle(CreateCategoryCommand command)
         {
-            var category = new Category(command.Name);
+            var category = new Category(command.Name, command.Description);
             var validationResult = new CategoryValidation().Validate(category);
             if (!validationResult.IsValid)
-                return new HandleResult("Categoria inválida!", validationResult.Errors.Select(x => x.ErrorMessage));
+                return new HandleResult("Categoria inválida!", validationResult.Errors.Select(x => x.ErrorMessage).ToList()); ;
 
             if (_repo.CategoryExists(category.Name))
                 return new HandleResult(false, "Categoria já cadastrada", null);

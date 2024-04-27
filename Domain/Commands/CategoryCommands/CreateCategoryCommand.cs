@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.CategoryCommands
 {
-    internal class CreateCategoryCommand
+    public class CreateCategoryCommand
     {
+        public string Name { get; set; }
+        public string Description { get; set; }
+
+        public CreateCategoryCommand(string name, string description)
+        {
+            Name = name;
+            Description = description;
+        }
     }
 }

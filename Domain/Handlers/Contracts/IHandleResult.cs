@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Handlers.Contracts
 {
-    internal interface IHandleResult
+    public interface IHandleResult
     {
+        public bool Sucess { get; }
+        public string Message { get; }
+        public object Data { get; }
+        public List<String> Errors { get; }
+
     }
 }

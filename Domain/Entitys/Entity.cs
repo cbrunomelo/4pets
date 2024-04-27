@@ -1,7 +1,7 @@
 ﻿namespace Domain.Entitys
 {
-    internal abstract class Entity
+    public abstract class Entity
     {
-        public int Id { get; private set; }
+        public int Id { get; protected set; }
     }
 }

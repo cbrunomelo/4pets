@@ -25,9 +25,9 @@ namespace Domain.Handlers
             Order order = new Order(command.Products, command.ClientId);
             var validate = new OrderValidation().Validate(order);
             if (!validate.IsValid)
-                return new HandleResult("Não foi possível criar o pedido", validate.Errors.Select(x => x.ErrorMessage));
+                return new HandleResult("Não foi possível criar o pedido", validate.Errors.Select(x => x.ErrorMessage).ToList());
 
-            List<String> UnavailableProducts = 
+            List<String> UnavailableProducts = _productRepository.GetUnavailableProducts(order.Products);
 
 
 

@@ -4,12 +4,15 @@
     {
         public string Name { get; private set; }
 
-        public Category(string name)
+        public string Description { get; private set; }
+
+        public Category(string name, string description)
         {
             Name = name;
+            Description = description;
         }
 
-        internal void SetId(int id)
+        public void SetId(int id)
         {
             Id = id;
         }

@@ -15,7 +15,7 @@ namespace Domain.Validation
             RuleFor(x => x.Client)
                 .NotNull().WithMessage("Client is required");
 
-            RuleFor(x => x.Items)
+            RuleFor(x => x.Products)
                 .NotNull().WithMessage("Items is required")
                 .Must(x => x.Count > 0).WithMessage("Items is required");
 

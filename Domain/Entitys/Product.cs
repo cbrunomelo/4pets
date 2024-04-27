@@ -6,24 +6,30 @@ using System.Threading.Tasks;
 
 namespace Domain.Entitys
 {
-    internal class Product : Entity
+    public class Product : Entity
     {
         public string Name { get; private set; }
         public decimal Price { get; private set; }
         public string Description { get; private set; }
-        public ProductCategory Category { get; private set; }
+        public Category Category { get; private set; }
+        public int CategoryId { get; set; }
 
-        internal Product(string name, decimal price, string description, ProductCategory category)
+        internal Product(string name, decimal price, string description, int categoryid)
         {
             Name = name;
             Price = price;
             Description = description;
+            CategoryId = categoryid;
+        }
+
+        internal void SetCategory(Category category)
+        {
             Category = category;
         }
 
-        internal void SetCategory(ProductCategory category)
+        public void SetId(int id)
         {
-            Category = category;
+            Id = id;
         }
 
     }
