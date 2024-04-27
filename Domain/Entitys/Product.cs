@@ -13,11 +13,12 @@ namespace Domain.Entitys
         public string Description { get; private set; }
         public ProductCategory Category { get; private set; }
 
-        internal Product(string name, decimal price, string description)
+        internal Product(string name, decimal price, string description, ProductCategory category)
         {
             Name = name;
             Price = price;
             Description = description;
+            Category = category;
         }
 
         internal void SetCategory(ProductCategory category)
