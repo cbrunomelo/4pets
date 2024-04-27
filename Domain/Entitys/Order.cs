@@ -32,9 +32,7 @@ namespace Domain.Entitys
         internal void SetTotal() => Total = Products.Sum(x => x.Price);
         
 
-        internal void setId(int id) => Id = id;        
-        
-
+        public void SetId(int id) => Id = id;
 
     }
 }
