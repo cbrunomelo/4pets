@@ -27,9 +27,12 @@ namespace Domain.Handlers
             var produtcValidate = new ProductValidation().Validate(product);
 
             if (!produtcValidate.IsValid)
-                return new HandleResult(false, "Por favor corrija os campos abaixo", produtcValidate.Errors.Select(x => x.ErrorMessage));
+                return new HandleResult("Por favor corrija os campos abaixo", produtcValidate.Errors.Select(x => x.ErrorMessage));
             
             int id = _repository.CreateProduct(product);
+
+            if (id == 0)
+                return new HandleResult(false, "Erro ao criar o produto", null);
 
             product.SetId(id);
 
