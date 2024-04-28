@@ -14,7 +14,7 @@ namespace Domain.Entitys
         public Category Category { get; private set; }
         public int CategoryId { get; set; }
 
-        internal Product(string name, decimal price, string description, int categoryid)
+        public Product(string name, decimal price, string description, int categoryid)
         {
             Name = name;
             Price = price;

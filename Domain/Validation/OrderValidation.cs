@@ -12,8 +12,8 @@ namespace Domain.Validation
     {
         public OrderValidation()
         {
-            RuleFor(x => x.Client)
-                .NotNull().WithMessage("Client is required");
+            RuleFor(x => x.ClientId)
+                .GreaterThan(0).WithMessage("Pedido precisa de um cliente");
 
             RuleFor(x => x.Products)
                 .NotNull().WithMessage("Items is required")
