@@ -23,6 +23,13 @@ namespace Domain.Handlers
             this.Sucess = false;
             this.Message = message;
             this.Errors = errors;
-        }   
+        } 
+        
+        public HandleResult(string message, string error)
+        {
+            this.Sucess = false;
+            this.Message = message;
+            this.Errors = new List<string> { error };
+        }
     }
 }

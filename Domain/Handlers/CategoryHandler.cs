@@ -27,11 +27,11 @@ namespace Domain.Handlers
                 return new HandleResult("Categoria inválida!", validationResult.Errors.Select(x => x.ErrorMessage).ToList()); ;
 
             if (_repo.CategoryExists(category.Name))
-                return new HandleResult(false, "Categoria já cadastrada", null);
+                return new HandleResult("Não foi possivel criar categoria.", "Categoria já cadastrada"); 
 
             var id = _repo.CreateCategory(category);
             if (id == 0)
-                return new HandleResult(false, "Erro ao criar a categoria", null);
+                return new HandleResult("Não foi possivel criar categoria.", "Erro interno");
 
             category.SetId(id);
 

@@ -28,11 +28,14 @@ namespace Domain.Handlers
 
             if (!produtcValidate.IsValid)
                 return new HandleResult("Por favor corrija os campos abaixo", produtcValidate.Errors.Select(x => x.ErrorMessage).ToList());
+
+            if (_repository.VerifyProductExist(product.Name))
+                return new HandleResult("Não foi possivel criar o produto", "Nome do produto já cadastrado");
             
-            int id = _repository.CreateProduct(product);
+            int id = _repository.Create(product);
 
             if (id == 0)
-                return new HandleResult(false, "Erro ao criar o produto", null);
+                return new HandleResult("Não foi possivel criar o produto", "Erro interno");
 
             product.SetId(id);
 

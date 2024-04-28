@@ -9,7 +9,8 @@ namespace Domain.Repository
 {
     public interface IProductRepository
     {
-        int CreateProduct(Product product);
-        List<string> GetUnavailableProducts(List<Product> products);
+        int Create(Product product);
+        List<string> GetUnavailables(List<Product> products);
+        bool VerifyProductExist(string name);
     }
 }

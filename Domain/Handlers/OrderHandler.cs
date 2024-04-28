@@ -27,7 +27,7 @@ namespace Domain.Handlers
             if (!validate.IsValid)
                 return new HandleResult("Não foi possível criar o pedido", validate.Errors.Select(x => x.ErrorMessage).ToList());
 
-            List<String> UnavailableProducts = _productRepository.GetUnavailableProducts(order.Products);
+            List<String> UnavailableProducts = _productRepository.GetUnavailables(order.Products);
 
 
 
