@@ -9,7 +9,7 @@ namespace Domain.Repository
 {
     public interface IOrderRepository
     {
-        int CreateOrder(Order order);
-        bool OrderExists(string name);
+        int Create(Order order);
+        bool Exists(string name);
     }
 }

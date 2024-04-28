@@ -27,13 +27,14 @@ namespace Domain.Handlers
             if (!validate.IsValid)
                 return new HandleResult("Não foi possível criar o pedido", validate.Errors.Select(x => x.ErrorMessage).ToList());
 
-            List<String> UnavailableProducts = _productRepository.GetUnavailables(order.Products);
+            List<Product> UnavailableProducts = _productRepository.GetUnavailables(order.Products);
+            if (UnavailableProducts.Count > 0)
+                return new HandleResult("Não foi possível criar o pedido, um ou mais produto indisponível", UnavailableProducts.Select(x => x.Name).ToList());
 
 
-
-            int id = _repo.CreateOrder(order);
+            int id = _repo.Create(order);
             if (id == 0)
-                return new HandleResult(false, "Erro ao criar o pedido", null);
+                return new HandleResult("Não foi possível criar o pedido", "Erro interno");
 
             order.SetId(id);
 
