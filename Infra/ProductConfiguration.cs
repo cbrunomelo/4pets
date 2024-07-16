@@ -1,0 +1,25 @@
+﻿using Domain.Entitys;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Infra
+{
+    internal class ProductConfiguration : IEntityTypeConfiguration<Product>
+    {
+        public void Configure(EntityTypeBuilder<Product> builder)
+        {
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
+            builder.Property(x => x.Price).IsRequired();
+            builder.Property(x => x.Description).IsRequired().HasMaxLength(200);
+            builder.Property(x => x.CategoryId).IsRequired();
+            builder.HasOne(x => x.Category).WithMany(List => List.Products).HasForeignKey(x => x.CategoryId);
+
+        }
+    }
+}
