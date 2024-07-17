@@ -1,4 +1,5 @@
 ﻿using Domain.Entitys;
+using Infra.Mapping;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,7 @@ namespace Infra
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>().HasKey(x => x.Id);
-            modelBuilder.Entity<Client>().HasKey(x => x.Id);
-            modelBuilder.Entity<Order>().HasKey(x => x.Id);
+            modelBuilder.ApplyConfiguration(new ProductMapping());
         }
     }
 }
