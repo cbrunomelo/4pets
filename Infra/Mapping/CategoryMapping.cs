@@ -7,19 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infra
+namespace Infra.Mapping
 {
-    internal class ProductConfiguration : IEntityTypeConfiguration<Product>
+    internal class CategoryMapping : IEntityTypeConfiguration<Category>
     {
-        public void Configure(EntityTypeBuilder<Product> builder)
+        public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
-            builder.Property(x => x.Price).IsRequired();
             builder.Property(x => x.Description).IsRequired().HasMaxLength(200);
-            builder.Property(x => x.CategoryId).IsRequired();
-            builder.HasOne(x => x.Category).WithMany(List => List.Products).HasForeignKey(x => x.CategoryId);
-
+            builder.HasMany(x => x.Products).WithOne(x => x.Category);
         }
     }
 }
