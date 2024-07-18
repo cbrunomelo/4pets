@@ -23,6 +23,9 @@ namespace Domain.Entitys
             Quantity = quantity;
             SetTotal();
         }
+        private OrderItem()
+        {
+        }
 
         private void SetTotal() => Total = Quantity * Product.Price;        
         internal void SetId(int id) => Id = id;
