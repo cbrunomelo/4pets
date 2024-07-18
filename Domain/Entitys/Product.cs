@@ -22,6 +22,10 @@ namespace Domain.Entitys
             CategoryId = categoryid;
         }
 
+        private Product()
+        {
+        }
+
         internal void SetCategory(Category category)
         {
             Category = category;

@@ -14,6 +14,9 @@ namespace Domain.Entitys
         public int ClientId { get; private set; }
         public Client Client { get; private set; }
 
+        private Order()
+        {            
+        }
         internal Order(List<OrderItem> itens, int clientId)
         {
             Date = DateTime.Now;

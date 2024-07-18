@@ -15,7 +15,7 @@ namespace Domain.Validation
             RuleFor(x => x.ClientId)
                 .GreaterThan(0).WithMessage("Pedido precisa de um cliente");
 
-            RuleFor(x => x.Products)
+            RuleFor(x => x.Itens)
                 .NotNull().WithMessage("Items is required")
                 .Must(x => x.Count > 0).WithMessage("Items is required");
 

@@ -22,14 +22,16 @@ namespace Domain.Handlers
         }
         public IHandleResult Handle(CreateOrderCommand command)
         {
-            Order order = new Order(command.Products, command.ClientId);
+            Order order = new Order(command.Itens, command.ClientId);
             var validate = new OrderValidation().Validate(order);
             if (!validate.IsValid)
                 return new HandleResult("Não foi possível criar o pedido", validate.Errors.Select(x => x.ErrorMessage).ToList());
 
-            List<Product> UnavailableProducts = _productRepository.GetUnavailables(order.Products);
+            List<Product> UnavailableProducts = _productRepository.GetUnavailables(order.Itens.Select(x => x.Product).ToList());
             if (UnavailableProducts.Count > 0)
                 return new HandleResult("Não foi possível criar o pedido, um ou mais produto indisponível", UnavailableProducts.Select(x => x.Name).ToList());
+
+            //verificar no estoque se tem a quantidade de produtos
 
 
             int id = _repo.Create(order);
@@ -37,6 +39,8 @@ namespace Domain.Handlers
                 return new HandleResult("Não foi possível criar o pedido", "Erro interno");
 
             order.SetId(id);
+
+            //abater valor do estoque
 
             return new HandleResult(true, "Pedido criado com sucesso", order);
 

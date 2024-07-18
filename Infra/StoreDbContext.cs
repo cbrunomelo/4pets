@@ -9,10 +9,18 @@ using System.Threading.Tasks;
 
 namespace Infra
 {
-    internal class StoreDbContext : DbContext
+    public class StoreDbContext : DbContext
     {
-        public StoreDbContext(DbContextOptions<StoreDbContext> options) : base(options)
+        //public StoreDbContext(DbContextOptions<StoreDbContext> options) : base(options)
+        //{
+        //}
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //C:\Users\zois\source\repos\4pets
+
+            optionsBuilder.UseSqlite("DataSource=StoreApp.db;Cache=Shared;");
+
         }
 
         public DbSet<Product> Products { get; set; }
@@ -22,6 +30,11 @@ namespace Infra
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ProductMapping());
+            modelBuilder.ApplyConfiguration(new ClientMapping());
+            modelBuilder.ApplyConfiguration(new OrderMapping());
+            modelBuilder.ApplyConfiguration(new OrderItemMapping());
+            modelBuilder.ApplyConfiguration(new CategoryMapping());
+
         }
     }
 }
