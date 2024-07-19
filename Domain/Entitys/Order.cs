@@ -10,15 +10,17 @@ namespace Domain.Entitys
     {
         public DateTime Date { get; private set; }
         public decimal Total { get; private set; }
-        public List<Product> Products { get; private set; }
-
+        public List<OrderItem> Itens { get; private set; }
         public int ClientId { get; private set; }
         public Client Client { get; private set; }
 
-        internal Order(List<Product> products, int clientId)
+        private Order()
+        {            
+        }
+        internal Order(List<OrderItem> itens, int clientId)
         {
             Date = DateTime.Now;
-            Products = products;
+            Itens = itens;
             ClientId = clientId;
             SetTotal();
         }
@@ -29,8 +31,7 @@ namespace Domain.Entitys
             ClientId = client.Id;
         }
         
-        internal void SetTotal() => Total = Products.Sum(x => x.Price);
-        
+        internal void SetTotal() => Total = Itens.Sum(x => x.Total);
 
         public void SetId(int id) => Id = id;
 

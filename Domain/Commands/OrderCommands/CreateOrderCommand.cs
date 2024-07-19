@@ -10,13 +10,13 @@ namespace Domain.Commands.OrderCommands
 {
     public class CreateOrderCommand : ICommand
     { 
-        public CreateOrderCommand(List<Product> products, int clientId, decimal qty)
+        public CreateOrderCommand(List<OrderItem> itens, int clientId)
         {
-            Products = products;
+            Itens = itens;
             ClientId = clientId;
             Qty = qty;
         }
-        public List<Product> Products { get; set; }
+        public List<OrderItem> Itens { get; set; }
         public int ClientId { get; set; }
 
         public decimal Qty { get; set; }
