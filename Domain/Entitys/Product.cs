@@ -14,12 +14,22 @@ namespace Domain.Entitys
         public Category Category { get; private set; }
         public int CategoryId { get; set; }
 
-        public Product(string name, decimal price, string description, int categoryid)
+        public int StockId { get
+                                 {
+                                     if (Stock is not null)
+                                         return Stock.Id;
+                                     return 0;
+                                 }
+
+                            set { } }
+        public Stock Stock { get; private set; }
+        public Product(string name, decimal price, string description, int categoryid, Stock stock)
         {
             Name = name;
             Price = price;
             Description = description;
             CategoryId = categoryid;
+            Stock = stock;
         }
 
         internal void SetCategory(Category category)
