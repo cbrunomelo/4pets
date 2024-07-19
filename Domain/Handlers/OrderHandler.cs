@@ -27,10 +27,12 @@ namespace Domain.Handlers
             if (!validate.IsValid)
                 return new HandleResult("Não foi possível criar o pedido", validate.Errors.Select(x => x.ErrorMessage).ToList());
 
-            List<Product> UnavailableProducts = _productRepository.GetUnavailables(order.Products);
-            if (UnavailableProducts.Count > 0)
-                return new HandleResult("Não foi possível criar o pedido, um ou mais produto indisponível", UnavailableProducts.Select(x => x.Name).ToList());
+            // verificar quantidade do pedido no stock
+            List<Product> products = _productRepository.GetProducts(order.Products);
+            foreach (var product in products)
+            {
 
+            }
 
             int id = _repo.Create(order);
             if (id == 0)

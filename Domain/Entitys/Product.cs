@@ -23,13 +23,12 @@ namespace Domain.Entitys
 
                             set { } }
         public Stock Stock { get; private set; }
-        public Product(string name, decimal price, string description, int categoryid, Stock stock)
+        public Product(string name, decimal price, string description, int categoryid)
         {
             Name = name;
             Price = price;
             Description = description;
             CategoryId = categoryid;
-            Stock = stock;
         }
 
         internal void SetCategory(Category category)
@@ -40,6 +39,11 @@ namespace Domain.Entitys
         public void SetId(int id)
         {
             Id = id;
+        }
+
+        public void SetStock(Stock stock)
+        {
+            Stock = stock;
         }
 
     }
