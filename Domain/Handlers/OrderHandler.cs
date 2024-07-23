@@ -15,6 +15,9 @@ namespace Domain.Handlers
     {
         private readonly IOrderRepository _repo;
         private readonly IProductRepository _productRepository;
+        private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IStockRepository _stockRepository;
+        
         public OrderHandler(IOrderRepository repository, IProductRepository productRepository) 
         {
             _repo = repository;
@@ -27,20 +30,32 @@ namespace Domain.Handlers
             if (!validate.IsValid)
                 return new HandleResult("Não foi possível criar o pedido", validate.Errors.Select(x => x.ErrorMessage).ToList());
 
-            List<Product> UnavailableProducts = _productRepository.GetUnavailables(order.Itens.Select(x => x.Product).ToList());
-            if (UnavailableProducts.Count > 0)
-                return new HandleResult("Não foi possível criar o pedido, um ou mais produto indisponível", UnavailableProducts.Select(x => x.Name).ToList());
+            var orderItens = _orderItemRepository.LoadProductsWithStock(order.Itens);
 
-            //verificar no estoque se tem a quantidade de produtos
+            if (orderItens.Count != order.Itens.Count)
+                return new HandleResult("Não foi possível criar o pedido", "Produto sem estoque");
 
+            var outOfStock = new List<string>();
 
-            int id = _repo.Create(order);
+            foreach (var item in orderItens)
+            {
+                if (item.Quantity > item.Product.Stock.Quantity)
+                    outOfStock.Add(item.Product.Name);
+            }
+
+            if (outOfStock.Count > 0)
+                return new HandleResult("Não foi possível criar o pedido", outOfStock);
+
+            int id = _repo.Create(new Order(orderItens, command.ClientId));
             if (id == 0)
                 return new HandleResult("Não foi possível criar o pedido", "Erro interno");
 
             order.SetId(id);
 
-            //abater valor do estoque
+            foreach (var item in orderItens)
+            {
+                _stockRepository.DecreaseStock(item.Product.Id, item.Quantity);
+            }
 
             return new HandleResult(true, "Pedido criado com sucesso", order);
 

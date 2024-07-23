@@ -14,7 +14,6 @@ namespace Domain.Commands.OrderCommands
         {
             Itens = itens;
             ClientId = clientId;
-            Qty = qty;
         }
         public List<OrderItem> Itens { get; set; }
         public int ClientId { get; set; }
