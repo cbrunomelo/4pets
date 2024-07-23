@@ -34,6 +34,7 @@ namespace Infra
             modelBuilder.ApplyConfiguration(new OrderMapping());
             modelBuilder.ApplyConfiguration(new OrderItemMapping());
             modelBuilder.ApplyConfiguration(new CategoryMapping());
+            modelBuilder.ApplyConfiguration(new StockMapping());
 
         }
     }
