@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Handlers
 {
-    public class ProductHandler
+    public class ProductHandler : IHandler<CreateProductCommands>
     {
         private readonly IProductRepository _repository;
 

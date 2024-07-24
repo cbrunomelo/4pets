@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Observers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,16 +12,25 @@ namespace Domain.Entitys
         public string Name { get; private set; }       
         public decimal Quantity { get; private set; }
         public decimal AvaragePrice { get; private set; }
-        public decimal Total { get; private set; }
-
+        public decimal TotalValue { get; private set; }
         public Product Product { get; private set; }
-
-        public void setEntry(decimal quantity, decimal total)
+        private List<Client> _clientObservers { get; set; }
+        public IReadOnlyCollection<Client> ClientObservers => _clientObservers;
+        public void setEntry(decimal quantity, decimal totalValue)
         {
             Quantity += quantity;
-            Total += total;
-            AvaragePrice = Total / Quantity;
+            TotalValue += totalValue;
+            AvaragePrice = TotalValue / Quantity;
         }
 
+        public void AttachObserver(Client client)
+        {
+            _clientObservers.Add(client);
+        }
+
+        public void DetachObserver(Client client)
+        {
+            _clientObservers.Remove(client);
+        }
     }
 }
