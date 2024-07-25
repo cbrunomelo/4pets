@@ -14,6 +14,8 @@ namespace Domain.Entitys
         public Category Category { get; private set; }
         public int CategoryId { get; set; }
         public List<OrderItem> OrderItems { get; private set; }
+        public int StockId { get; private set; }
+        public Stock Stock { get; private set; }
         public Product(string name, decimal price, string description, int categoryid)
         {
             Name = name;
