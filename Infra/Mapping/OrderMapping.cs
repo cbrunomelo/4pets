@@ -13,6 +13,7 @@ namespace Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
+            builder.ToTable("TB_ORDER");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Date).IsRequired();
             builder.Property(x => x.Total).IsRequired();

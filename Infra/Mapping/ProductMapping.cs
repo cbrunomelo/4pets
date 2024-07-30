@@ -13,6 +13,7 @@ namespace Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            builder.ToTable("TB_PRODUCT");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
             builder.Property(x => x.Price).IsRequired();
