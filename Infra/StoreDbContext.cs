@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Infra
 {
     public class StoreDbContext : DbContext
@@ -19,13 +20,16 @@ namespace Infra
         {
             //C:\Users\zois\source\repos\4pets
 
-            optionsBuilder.UseSqlite("DataSource=StoreApp.db;Cache=Shared;");
+            optionsBuilder.UseSqlServer(@"Server=DESKTOP-D4J5F0T\SQLEXPRESS;Database=4pets;Trusted_Connection=True;TrustServerCertificate=True;");
 
         }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

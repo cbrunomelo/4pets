@@ -13,11 +13,12 @@ namespace Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
+            builder.ToTable("TB_ORDER_ITEM");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Quantity).IsRequired();
             builder.Property(x => x.Total).IsRequired();
-            builder.HasOne(x => x.Product).WithMany(x => x.OrderItems);
-            builder.HasOne(x => x.Order).WithMany(x => x.Itens);
+            builder.HasOne(x => x.Product).WithMany(x => x.OrderItems).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.Order).WithMany(x => x.Itens).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
