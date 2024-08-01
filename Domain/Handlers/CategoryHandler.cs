@@ -1,5 +1,6 @@
 ﻿using Domain.Commands.CategoryCommands;
 using Domain.Entitys;
+using Domain.Entitys.Enuns;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
@@ -56,6 +57,23 @@ namespace Domain.Handlers
             return new HandleResult(true, "Categoria editada com sucesso", category);
         }
 
+
+        public IHandleResult Handle(DeleteCategoryCommand command)
+        {
+            var category = _repo.GetById(command.Id);
+            if (category == null)
+                return new HandleResult("Categoria não encontrada", "Categoria não encontrada");
+
+            category.Status = EStatus.Inactive;
+
+            var sucess = _repo.Update(category);
+
+            if (!sucess)
+                return new HandleResult("Não foi possivel deletar categoria.", "Erro interno");
+
+            return new HandleResult(true, "Categoria deletada com sucesso", category);
+
+        }
 
     }
 }

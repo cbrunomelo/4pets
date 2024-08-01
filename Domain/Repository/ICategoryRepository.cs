@@ -12,5 +12,6 @@ namespace Domain.Repository
         bool CategoryExists(string name);
         int CreateCategory(Category category);
         bool Update(Category category);
+        Category GetById(int id);
     }
 }
