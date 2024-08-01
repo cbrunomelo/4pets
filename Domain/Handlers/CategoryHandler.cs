@@ -55,5 +55,7 @@ namespace Domain.Handlers
 
             return new HandleResult(true, "Categoria editada com sucesso", category);
         }
+
+
     }
 }
