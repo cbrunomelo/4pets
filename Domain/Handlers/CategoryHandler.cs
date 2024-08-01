@@ -37,5 +37,23 @@ namespace Domain.Handlers
 
             return new HandleResult(true, "Categoria criada com sucesso", category);
         }
+
+        public IHandleResult Handle(EditCategoryCommand command)
+        {
+            var category = new Category(command.Name, command.Description);
+            category.SetId(command.Id);
+            var validationResult = new CategoryValidation().Validate(category);
+            if (!validationResult.IsValid)
+                return new HandleResult("Categoria inválida!", validationResult.Errors.Select(x => x.ErrorMessage).ToList()); ;
+
+            if (_repo.CategoryExists(category.Name))
+                return new HandleResult("Não foi possivel editar categoria.", "Categoria já cadastrada");
+
+            var sucess = _repo.Update(category);
+            if (sucess)
+                return new HandleResult("Não foi possivel editar categoria.", "Erro interno");
+
+            return new HandleResult(true, "Categoria editada com sucesso", category);
+        }
     }
 }
