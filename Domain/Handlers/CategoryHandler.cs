@@ -30,6 +30,8 @@ namespace Domain.Handlers
             if (_repo.CategoryExists(category.Name))
                 return new HandleResult("Não foi possivel criar categoria.", "Categoria já cadastrada"); 
 
+            category.Status = EStatus.Active;
+
             var id = _repo.CreateCategory(category);
             if (id == 0)
                 return new HandleResult("Não foi possivel criar categoria.", "Erro interno");
