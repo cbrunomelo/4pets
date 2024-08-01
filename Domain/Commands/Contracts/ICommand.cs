@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entitys;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

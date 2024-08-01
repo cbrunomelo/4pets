@@ -7,5 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.CategoryCommands
 {
-    public record CreateCategoryCommand(string Name, string Description) : ICommand;
+    public record CreateCategoryCommand(string Name, string Description) : ICommand
+    {
+    }
 }

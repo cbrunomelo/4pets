@@ -1,4 +1,5 @@
 ﻿using Domain.Commands.Contracts;
+using Domain.Entitys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
