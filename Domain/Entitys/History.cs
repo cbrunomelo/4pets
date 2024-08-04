@@ -9,6 +9,15 @@ namespace Domain.Entitys
 {
     public class History
     {
+        public History(string entityName, int entityId, int userId, EHistoryAction action, DateTime date)
+        {
+            this.entityName = entityName;
+            EntityId = entityId;
+            UserId = userId;
+            Action = action;
+            Date = date;
+        }
+
         public int Id { get; set; }
         public EHistoryAction Action { get; set; }
         public string entityName { get; set; }

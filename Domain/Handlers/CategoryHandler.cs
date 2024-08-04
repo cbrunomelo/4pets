@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Handlers
 {
-    public class CategoryHandler : IHandler<CreateCategoryCommand>
+    public class CategoryHandler : IHandler<CreateCategoryCommand>, IHandler<EditCategoryCommand>, IHandler<DeleteCategoryCommand>
     {
         private readonly ICategoryRepository _repo;
 
@@ -55,6 +55,7 @@ namespace Domain.Handlers
             var sucess = _repo.Update(category);
             if (sucess)
                 return new HandleResult("Não foi possivel editar categoria.", "Erro interno");
+
 
             return new HandleResult(true, "Categoria editada com sucesso", category);
         }
