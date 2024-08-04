@@ -1,4 +1,5 @@
 ﻿using Domain.Commands.CategoryCommands;
+using Domain.Commands.HistoryCommands;
 using Domain.Entitys;
 using Domain.Entitys.Enuns;
 using Domain.Handlers.Contracts;
@@ -9,16 +10,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Domain.Handlers
 {
     public class CategoryHandler : IHandler<CreateCategoryCommand>, IHandler<EditCategoryCommand>, IHandler<DeleteCategoryCommand>
     {
         private readonly ICategoryRepository _repo;
+        private readonly IHandler<CreateHistoryCommand> _historyHandle;
 
-        public CategoryHandler(ICategoryRepository repo)
+        public CategoryHandler(ICategoryRepository repo, IHandler<CreateHistoryCommand> historyHandle)
         {
             _repo = repo;
+            _historyHandle = historyHandle;
         }
         public IHandleResult Handle(CreateCategoryCommand command)
         {
@@ -38,6 +42,7 @@ namespace Domain.Handlers
 
             category.SetId(id);
 
+            _historyHandle.Handle(new CreateHistoryCommand("Category", category.Id, command.UserId, EHistoryAction.Insert));
             return new HandleResult(true, "Categoria criada com sucesso", category);
         }
 

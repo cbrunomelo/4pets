@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.StockCommands
 {
-    public record EntryStockCommand(int StockId, decimal Quantity) : ICommand;
+    public record EntryStockCommand(int StockId, decimal Quantity, decimal TotalValue) : ICommand;
 }
