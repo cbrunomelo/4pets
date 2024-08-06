@@ -42,7 +42,7 @@ namespace Domain.Handlers
 
             category.SetId(id);
 
-            _historyHandle.Handle(new CreateHistoryCommand("Category", category.Id, command.UserId, EHistoryAction.Insert));
+            _historyHandle.Handle(new CreateHistoryCommand(nameof(category), category.Id, command.UserId, EHistoryAction.Insert));
             return new HandleResult(true, "Categoria criada com sucesso", category);
         }
 
@@ -61,7 +61,7 @@ namespace Domain.Handlers
             if (sucess)
                 return new HandleResult("Não foi possivel editar categoria.", "Erro interno");
 
-
+            _historyHandle.Handle(new CreateHistoryCommand(nameof(category), category.Id, command.UserId, EHistoryAction.Update));
             return new HandleResult(true, "Categoria editada com sucesso", category);
         }
 
@@ -79,6 +79,7 @@ namespace Domain.Handlers
             if (!sucess)
                 return new HandleResult("Não foi possivel deletar categoria.", "Erro interno");
 
+            _historyHandle.Handle(new CreateHistoryCommand(nameof(category), category.Id, command.UserId, EHistoryAction.Update));
             return new HandleResult(true, "Categoria deletada com sucesso", category);
 
         }

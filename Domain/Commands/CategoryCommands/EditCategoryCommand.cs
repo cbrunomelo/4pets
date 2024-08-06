@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.CategoryCommands
 {
-    public record EditCategoryCommand(int Id, string Name, string Description) : ICommand;
+    public record EditCategoryCommand(int Id, string Name, string Description,int UserId) : ICommand;
 
 }

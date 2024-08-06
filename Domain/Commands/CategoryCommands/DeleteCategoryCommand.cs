@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.CategoryCommands
 {
-    public record DeleteCategoryCommand(int Id) : ICommand;
+    public record DeleteCategoryCommand(int Id, int UserId) : ICommand;
 }
