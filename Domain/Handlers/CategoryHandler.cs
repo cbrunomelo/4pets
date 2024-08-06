@@ -42,7 +42,7 @@ namespace Domain.Handlers
 
             category.SetId(id);
 
-            _historyHandle.Handle(new CreateHistoryCommand(nameof(category), category.Id, command.UserId, EHistoryAction.Insert));
+            _historyHandle.Handle(new CreateHistoryCommand(command, category, null,EHistoryAction.Insert));
             return new HandleResult(true, "Categoria criada com sucesso", category);
         }
 
@@ -57,11 +57,13 @@ namespace Domain.Handlers
             if (_repo.CategoryExists(category.Name))
                 return new HandleResult("Não foi possivel editar categoria.", "Categoria já cadastrada");
 
+            var OldCategory = _repo.GetById(command.Id);
+
             var sucess = _repo.Update(category);
             if (sucess)
                 return new HandleResult("Não foi possivel editar categoria.", "Erro interno");
 
-            _historyHandle.Handle(new CreateHistoryCommand(nameof(category), category.Id, command.UserId, EHistoryAction.Update));
+            _historyHandle.Handle(new CreateHistoryCommand(command, category, OldCategory,EHistoryAction.Update));
             return new HandleResult(true, "Categoria editada com sucesso", category);
         }
 
@@ -74,12 +76,13 @@ namespace Domain.Handlers
 
             category.Status = EStatus.Inactive;
 
+            var oldCategory = _repo.GetById(command.Id);
             var sucess = _repo.Update(category);
 
             if (!sucess)
                 return new HandleResult("Não foi possivel deletar categoria.", "Erro interno");
 
-            _historyHandle.Handle(new CreateHistoryCommand(nameof(category), category.Id, command.UserId, EHistoryAction.Update));
+            _historyHandle.Handle(new CreateHistoryCommand(command, category, oldCategory, EHistoryAction.Update));
             return new HandleResult(true, "Categoria deletada com sucesso", category);
 
         }

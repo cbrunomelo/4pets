@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.OrderCommands
 {
-    public record CreateOrderCommand(List<OrderItem> Itens, int ClientId) : ICommand;
+    public record CreateOrderCommand(List<OrderItem> Itens, int ClientId, int UserId) : ICommand;
 }

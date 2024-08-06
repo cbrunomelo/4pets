@@ -9,22 +9,49 @@ namespace Domain.Entitys
 {
     public class History
     {
-        public History(string entityName, int entityId, int userId, EHistoryAction action, DateTime date)
+        public History()
         {
-            this.entityName = entityName;
-            EntityId = entityId;
+            
+        }
+        public History(Entity entity, int userId)
+        {
             UserId = userId;
-            Action = action;
-            Date = date;
+            CreateDate = DateTime.Now;
+            setEntity(entity);
         }
 
         public int Id { get; set; }
-        public EHistoryAction Action { get; set; }
-        public string entityName { get; set; }
-        public int EntityId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime CreateDate { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
+        public Category Category { get; set; }
+        public int CategoryId { get; set; }
+        public Client Client { get; set; }
+        public int ClientId { get; set; }
+        public Product Product { get; set; }
+        public int ProductId { get; set; }
+        public Order Order { get; set; }
+        public int OrderId { get; set; }
+        public OrderItem OrderItem { get; set; }
+        public int OrderItemId { get; set; }
+        public Stock Stock { get; set; }
+        public int StockId { get; set; }
+        public List<HistoryField> Fields { get; set; } = new List<HistoryField>();
+
+        private void setEntity(Entity entity)
+        {
+            Dictionary<Type, Action> Dictionary = new Dictionary<Type, Action>
+            {
+                { typeof(User), () => { UserId = entity.Id; } },
+                { typeof(Category), () => { CategoryId = entity.Id; } },
+                { typeof(Client), () => { ClientId = entity.Id; } },
+                { typeof(Product), () => { ProductId = entity.Id; } },
+                { typeof(Order), () => { OrderId = entity.Id; } },
+                { typeof(OrderItem), () => { OrderItemId = entity.Id; } },
+                { typeof(Stock), () => { StockId = entity.Id; } },
+
+            };
+        }
 
     }
 }

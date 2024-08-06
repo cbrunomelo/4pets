@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.Contracts
 {
-    internal interface ICommand
+    public interface ICommand
     {
+        int UserId { get; init; }
     }
 }

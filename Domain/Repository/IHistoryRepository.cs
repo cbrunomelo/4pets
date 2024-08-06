@@ -10,5 +10,6 @@ namespace Domain.Repository
     public interface IHistoryRepository
     {
         int Create(History history);
+        int GetHistoryId(Entity entity);
     }
 }
