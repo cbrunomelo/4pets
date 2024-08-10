@@ -25,6 +25,7 @@ namespace Domain.Entitys
         public string CurrentValue { get; set; }
         public int HistoryId { get; set; }
         public History History { get; set; }
-        
+        public DateTime Date { get; set; } = DateTime.Now;
+
     }
 }

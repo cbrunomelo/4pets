@@ -1,5 +1,7 @@
-﻿using Domain.Commands.OrderCommands;
+﻿using Domain.Commands.HistoryCommands;
+using Domain.Commands.OrderCommands;
 using Domain.Entitys;
+using Domain.Entitys.Enuns;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
@@ -17,11 +19,14 @@ namespace Domain.Handlers
         private readonly IProductRepository _productRepository;
         private readonly IOrderItemRepository _orderItemRepository;
         private readonly IStockRepository _stockRepository;
-        
-        public OrderHandler(IOrderRepository repository, IProductRepository productRepository) 
+        private readonly IHandler<CreateHistoryCommand> _historyHandle;
+
+        public OrderHandler(IOrderRepository repository, IProductRepository productRepository
+            ,IHandler<CreateHistoryCommand> _historyHandle) 
         {
             _repo = repository;
             _productRepository = productRepository;
+            this._historyHandle = _historyHandle;
         }
         public IHandleResult Handle(CreateOrderCommand command)
         {
@@ -56,6 +61,8 @@ namespace Domain.Handlers
             {
                 _stockRepository.DecreaseStock(item.Product.Id, item.Quantity);
             }
+
+            _historyHandle.Handle(new CreateHistoryCommand(command, order, null, EHistoryAction.Insert));
 
             return new HandleResult(true, "Pedido criado com sucesso", order);
 
