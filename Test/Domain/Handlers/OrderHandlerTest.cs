@@ -1,4 +1,5 @@
-﻿using Domain.Commands.OrderCommands;
+﻿using Domain.Commands.HistoryCommands;
+using Domain.Commands.OrderCommands;
 using Domain.Entitys;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
@@ -17,19 +18,21 @@ namespace Test.Domain.Handlers
     {
         private readonly Mock<IOrderRepository> _OrderRepositoryMock;
         private readonly Mock<IProductRepository> _ProductRepositoryMock;
+        private readonly Mock<IHandler<CreateHistoryCommand>> _historyHandlerMock;
         public OrderHandlerTest() 
         {
             _OrderRepositoryMock = new Mock<IOrderRepository>();
             _ProductRepositoryMock = new Mock<IProductRepository>();
+            _historyHandlerMock = new Mock<IHandler<CreateHistoryCommand>>();
         }
 
 
         [Theory]
         [MemberData(nameof(ValidOrderData.GetData), MemberType = typeof(ValidOrderData))]
-        public void CreateOrderCommand_WithValidOrder_ShouldReturnOrder(List<Product> products, int clientId)
+        public void CreateOrderCommand_WithValidOrder_ShouldReturnOrder(List<OrderItem> itens, int clientId, int userId)
         {
             //arrange
-            var command = new CreateOrderCommand(products, clientId);
+            var command = new CreateOrderCommand(itens, clientId, userId);
             _OrderRepositoryMock.Setup(x => x.Create(It.IsAny<Order>())).Returns(1);
             _ProductRepositoryMock.Setup(x => x.GetUnavailables(It.IsAny<List<Product>>())).Returns(new List<Product>());
             var handler = new OrderHandler(_OrderRepositoryMock.Object, _ProductRepositoryMock.Object);
