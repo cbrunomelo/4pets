@@ -16,16 +16,14 @@ namespace Domain.Handlers
     public class OrderHandler : IHandler<CreateOrderCommand>
     {
         private readonly IOrderRepository _repo;
-        private readonly IProductRepository _productRepository;
         private readonly IOrderItemRepository _orderItemRepository;
         private readonly IStockRepository _stockRepository;
         private readonly IHandler<CreateHistoryCommand> _historyHandle;
 
-        public OrderHandler(IOrderRepository repository, IProductRepository productRepository
+        public OrderHandler(IOrderRepository repository
             ,IHandler<CreateHistoryCommand> _historyHandle) 
         {
             _repo = repository;
-            _productRepository = productRepository;
             this._historyHandle = _historyHandle;
         }
         public IHandleResult Handle(CreateOrderCommand command)

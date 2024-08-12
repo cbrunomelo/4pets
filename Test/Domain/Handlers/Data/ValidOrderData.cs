@@ -14,10 +14,9 @@ namespace Test.Domain.Handlers.Data
         {
             return new List<object[]>
             {
-                new object[] { new List<Product> { new Product("Product 1", 10, "Description", 1) }, 1 },
-                new object[] { new List<Product> { new Product("Product 1", 10, "Description", 1), new Product("Product 2", 20, "Description", 1) }, 1 },
-                new object[] { new List<Product> { new Product("Product 1", 10, "Description", 1), new Product("Product 2", 20, "Description", 1), new Product("Product 3", 30, "Description", 1) }, 1 },
-                new object[] { new List<Product> { new Product("Product 1", 10, "Description", 1), new Product("Product 2", 20, "Description", 1), new Product("Product 3", 30, "Description", 1), new Product("Product 4", 40, "Description", 1) }, 1 },
+                new object[] { new List<OrderItem> { new OrderItem(new Product("Product 1", 2, "Produto test", 2),3) }, 1, 2 },
+                new object[] { new List<OrderItem> { new OrderItem(new Product("Product 2", 2, "Produto test", 2),3) }, 2, 2 },
+                new object[] { new List<OrderItem> { new OrderItem(new Product("Product 3", 2, "Produto test", 2),3) }, 3, 2 },
             };
         }
     }
