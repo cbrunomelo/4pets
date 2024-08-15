@@ -21,10 +21,14 @@ namespace Domain.Handlers
         private readonly IHandler<CreateHistoryCommand> _historyHandle;
 
         public OrderHandler(IOrderRepository repository
-            ,IHandler<CreateHistoryCommand> _historyHandle) 
+            ,IOrderItemRepository orderItemRepository
+            ,IHandler<CreateHistoryCommand> _historyHandle
+            ,IStockRepository stockRepository) 
         {
             _repo = repository;
+            _orderItemRepository = orderItemRepository;
             this._historyHandle = _historyHandle;
+            _stockRepository = stockRepository;
         }
         public IHandleResult Handle(CreateOrderCommand command)
         {
@@ -42,6 +46,9 @@ namespace Domain.Handlers
 
             foreach (var item in orderItens)
             {
+                if (item.Product.Stock == null)
+                    return new HandleResult("Não foi possível criar o pedido", @$"Produto ""{item.Product.Name}"" sem estoque");
+
                 if (item.Quantity > item.Product.Stock.Quantity)
                     outOfStock.Add(item.Product.Name);
             }

@@ -31,5 +31,18 @@ namespace Domain.Entitys
         {
             _clientObservers.Remove(client);
         }
+
+        public Stock(string name, decimal quantity, decimal avaragePrice, decimal totalValue, Product product)
+        {
+            Name = name;
+            Quantity = quantity;
+            AvaragePrice = avaragePrice;
+            TotalValue = totalValue;
+            Product = product;
+            _clientObservers = new List<Client>();
+        }       
+            
+        
+
     }
 }

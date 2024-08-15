@@ -19,11 +19,15 @@ namespace Test.Domain.Handlers
         private readonly Mock<IOrderRepository> _OrderRepositoryMock;
         private readonly Mock<IProductRepository> _ProductRepositoryMock;
         private readonly Mock<IHandler<CreateHistoryCommand>> _historyHandle;
+        private readonly Mock<IOrderItemRepository> _orderItemRepoMock;
+        private readonly Mock<IStockRepository> _stockRepository;
         public OrderHandlerTest() 
         {
             _OrderRepositoryMock = new Mock<IOrderRepository>();
             _ProductRepositoryMock = new Mock<IProductRepository>();
             _historyHandle = new Mock<IHandler<CreateHistoryCommand>>();
+            _orderItemRepoMock = new Mock<IOrderItemRepository>();
+            _stockRepository = new Mock<IStockRepository>();
         }
 
 
@@ -34,8 +38,9 @@ namespace Test.Domain.Handlers
             //arrange
             var command = new CreateOrderCommand(orderItens, clientId, userId);
             _OrderRepositoryMock.Setup(x => x.Create(It.IsAny<Order>())).Returns(1);
-            _ProductRepositoryMock.Setup(x => x.GetUnavailables(It.IsAny<List<Product>>())).Returns(new List<Product>());
-            var handler = new OrderHandler(_OrderRepositoryMock.Object, _historyHandle.Object);
+            //_ProductRepositoryMock.Setup(x => x.GetUnavailables(It.IsAny<List<Product>>())).Returns(new List<Product>());
+            _orderItemRepoMock.Setup(x => x.LoadProductsWithStock(It.IsAny<List<OrderItem>>())).Returns(orderItens);            
+            var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _historyHandle.Object, _stockRepository.Object);
 
             //Act
             var result = (HandleResult)handler.Handle(command);
@@ -45,7 +50,8 @@ namespace Test.Domain.Handlers
             Assert.Equal("Pedido criado com sucesso", result.Message);
             Assert.Empty(result.Errors);
             _OrderRepositoryMock.Verify(x => x.Create(It.IsAny<Order>()), Times.Once);
-            _ProductRepositoryMock.Verify(x => x.GetUnavailables(It.IsAny<List<Product>>()), Times.Once);
+            //_ProductRepositoryMock.Verify(x => x.(It.IsAny<List<Product>>()), Times.Once);
+            _stockRepository.Verify(x => x.DecreaseStock(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(orderItens.Count));
         }
 
 
@@ -57,7 +63,7 @@ namespace Test.Domain.Handlers
             var command = new CreateOrderCommand(orderItens, clientId, userId);
             _OrderRepositoryMock.Setup(x => x.Create(It.IsAny<Order>())).Returns(1);
             _ProductRepositoryMock.Setup(x => x.GetUnavailables(It.IsAny<List<Product>>())).Returns(new List<Product>());
-            var handler = new OrderHandler(_OrderRepositoryMock.Object,  _historyHandle.Object);
+            var handler = new OrderHandler(_OrderRepositoryMock.Object,  _orderItemRepoMock.Object, _historyHandle.Object, _stockRepository.Object);
 
             //Act
             var result = (HandleResult)handler.Handle(command);
@@ -78,7 +84,7 @@ namespace Test.Domain.Handlers
             var command = new CreateOrderCommand(orderItems, clientId, userId);
             _OrderRepositoryMock.Setup(x => x.Create(It.IsAny<Order>())).Returns(1);
 
-            var handler = new OrderHandler(_OrderRepositoryMock.Object, _historyHandle.Object);
+            var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _historyHandle.Object, _stockRepository.Object);
 
             //Act
             var result = (HandleResult)handler.Handle(command);
