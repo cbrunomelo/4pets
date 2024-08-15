@@ -19,7 +19,7 @@ namespace Domain.Entitys
         public OrderItem(Product product, int quantity)
         {
             Product = product;
-            ProductId = product.Id;
+            ProductId = product is null ? 0 : product.Id;
             Quantity = quantity;
             SetTotal();
         }
@@ -27,7 +27,7 @@ namespace Domain.Entitys
         {
         }
 
-        private void SetTotal() => Total = Quantity * Product.Price;        
+        private void SetTotal() => Total = Quantity * (Product is null ? 1 : Product.Price);        
         internal void SetId(int id) => Id = id;
         
     }

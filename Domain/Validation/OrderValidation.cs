@@ -21,6 +21,10 @@ namespace Domain.Validation
 
             RuleFor(x => x.Total)
                 .GreaterThan(0).WithMessage("Total must be greater than 0");
+
+            RuleForEach(x => x.Itens)
+                .SetValidator(new OrderItemValidation());
+
         }
 
     }
