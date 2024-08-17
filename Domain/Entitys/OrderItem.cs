@@ -10,7 +10,14 @@ namespace Domain.Entitys
     {
         public int Id { get; private set; }
         public Product Product { get; private set; }
-        public int ProductId { get; private set; }
+        public int ProductId 
+        { get
+            {
+                if (Product is null)
+                    return 0;
+                return Product.Id;
+            }
+            private set{ } }
         public int Quantity { get; private set; }
         public decimal Total { get; private set; }
         public Order Order { get; private set; }

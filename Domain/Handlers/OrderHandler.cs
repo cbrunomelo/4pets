@@ -54,7 +54,7 @@ namespace Domain.Handlers
             }
 
             if (outOfStock.Count > 0)
-                return new HandleResult("Não foi possível criar o pedido", outOfStock);
+                return new HandleResult("Não foi possível criar o pedido, um ou mais produto indisponível", outOfStock);
 
             int id = _repo.Create(new Order(orderItens, command.ClientId));
             if (id == 0)

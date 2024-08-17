@@ -75,13 +75,13 @@ namespace Test.Domain.Handlers
         }
 
         [Theory]
-        [MemberData(nameof(ValidOrderData.GetData), MemberType = typeof(ValidOrderData))]
-        public void CreateOrderCommand_WithUnavailableProduct_ShouldNotCreateOrder(List<OrderItem> orderItems, int clientId, int userId)
+        [MemberData(nameof(ValidOrderWithoutStockData.GetData), MemberType = typeof(ValidOrderWithoutStockData))]
+        public void CreateOrderCommand_WithUnavailableProductInStock_ShouldNotCreateOrder(List<OrderItem> orderItems, int clientId, int userId)
         {
             //Arrange
             var command = new CreateOrderCommand(orderItems, clientId, userId);
             _OrderRepositoryMock.Setup(x => x.Create(It.IsAny<Order>())).Returns(1);
-
+            _orderItemRepoMock.Setup(x => x.LoadProductsWithStock(It.IsAny<List<OrderItem>>())).Returns(orderItems);
             var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _historyHandle.Object, _stockRepository.Object);
 
             //Act
@@ -93,7 +93,7 @@ namespace Test.Domain.Handlers
             Assert.Equal("Não foi possível criar o pedido, um ou mais produto indisponível", result.Message);
             Assert.NotEmpty(result.Errors);
             _OrderRepositoryMock.Verify(x => x.Create(It.IsAny<Order>()), Times.Never);
-            _ProductRepositoryMock.Verify(x => x.GetUnavailables(It.IsAny<List<Product>>()), Times.Once);
+            _stockRepository.Verify(x => x.DecreaseStock(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
         }
 
 
