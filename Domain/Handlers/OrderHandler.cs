@@ -42,16 +42,7 @@ namespace Domain.Handlers
             if (orderItens.Count != order.Itens.Count)
                 return new HandleResult("Não foi possível criar o pedido", "Produto sem estoque");
 
-            var outOfStock = new List<string>();
-
-            foreach (var item in orderItens)
-            {
-                if (item.Product.Stock == null)
-                    return new HandleResult("Não foi possível criar o pedido", @$"Produto ""{item.Product.Name}"" sem estoque");
-
-                if (item.Quantity > item.Product.Stock.Quantity)
-                    outOfStock.Add(item.Product.Name);
-            }
+            var outOfStock = GetOutOfStock(orderItens);
 
             if (outOfStock.Count > 0)
                 return new HandleResult("Não foi possível criar o pedido, um ou mais produto indisponível", outOfStock);
@@ -72,6 +63,17 @@ namespace Domain.Handlers
             return new HandleResult(true, "Pedido criado com sucesso", order);
 
             
+        }
+
+        private List<string> GetOutOfStock(List<OrderItem> orderItens)
+        {
+            var outOfStock = new List<string>();
+            foreach (var item in orderItens)
+            {
+                if (item.Product.Stock.Quantity < item.Quantity)
+                    outOfStock.Add(item.Product.Name);
+            }
+            return outOfStock;
         }
     }
 }
