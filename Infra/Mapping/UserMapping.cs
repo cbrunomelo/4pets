@@ -13,10 +13,12 @@ namespace Infra.Mapping
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("User");
+            builder.ToTable("TB_USER");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(60).HasColumnType("varchar(60)");
             builder.Property(x => x.Email).IsRequired().HasMaxLength(100).HasColumnType("varchar(100)");
+            builder.HasOne(x => x.History).WithOne(x => x.User).HasForeignKey<History>(x => x.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

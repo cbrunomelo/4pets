@@ -8,6 +8,8 @@
 
         public List<Product> Products { get; private set; }
 
+
+
         public Category(string name, string description)
         {
             Name = name;

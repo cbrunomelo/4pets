@@ -8,6 +8,7 @@ namespace Domain.Entitys
 {
     public class Stock : Entity
     {
+        public Stock(){}
         public string Name { get; private set; }       
         public decimal Quantity { get; private set; }
         public decimal AvaragePrice { get; private set; }

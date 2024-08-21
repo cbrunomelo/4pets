@@ -9,7 +9,7 @@ namespace Domain.Entitys
 {
     public class HistoryField : Entity
     {
-
+        public HistoryField() { }
         public HistoryField(int historyID, int userId, EHistoryAction action, string fieldName, string currentValue) 
         {
             HistoryId = historyID;

@@ -22,6 +22,8 @@ namespace Domain.Entitys
         public decimal Total { get; private set; }
         public Order Order { get; private set; }
         public int OrderId { get; private set; }
+        public History History { get; private set; }
+        public int HistoryId { get; private set; }
 
         public OrderItem(Product product, int quantity)
         {

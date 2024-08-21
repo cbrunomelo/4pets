@@ -29,7 +29,8 @@ namespace Infra
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Category> Categories { get; set; }
-
+        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<History> Histories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +40,9 @@ namespace Infra
             modelBuilder.ApplyConfiguration(new OrderItemMapping());
             modelBuilder.ApplyConfiguration(new CategoryMapping());
             modelBuilder.ApplyConfiguration(new StockMapping());
+            modelBuilder.ApplyConfiguration(new HistoryMapping());
+            modelBuilder.ApplyConfiguration(new HistoryFieldMapping());
+
 
         }
     }
