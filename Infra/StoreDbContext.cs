@@ -32,6 +32,8 @@ namespace Infra
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<History> Histories { get; set; }
 
+        public DbSet<HistoryField> HistoryFields { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ProductMapping());
