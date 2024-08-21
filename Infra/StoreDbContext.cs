@@ -20,7 +20,7 @@ namespace Infra
         {
             //C:\Users\zois\source\repos\4pets
 
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-D4J5F0T\SQLEXPRESS;Database=4pets;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=4pets;Trusted_Connection=True;TrustServerCertificate=True;");
 
         }
 
