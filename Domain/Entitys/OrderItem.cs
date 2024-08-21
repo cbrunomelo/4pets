@@ -9,7 +9,7 @@ namespace Domain.Entitys
     public class OrderItem
     {
         public int Id { get; private set; }
-        public Product Product { get; private set; }
+        public Product Product { get; set; }
         public int ProductId 
         { get
             {
