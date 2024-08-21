@@ -31,7 +31,6 @@ namespace Infra
         public DbSet<Category> Categories { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<History> Histories { get; set; }
-
         public DbSet<HistoryField> HistoryFields { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
