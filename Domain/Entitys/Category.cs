@@ -1,4 +1,5 @@
-﻿namespace Domain.Entitys
+﻿
+namespace Domain.Entitys
 {
     public class Category : Entity
     {
@@ -19,6 +20,12 @@
         public void SetId(int id)
         {
             Id = id;
+        }
+
+        public void Update(Category category)
+        {
+            Name = category.Name;
+            Description = category.Description;
         }
     }
 }
