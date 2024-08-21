@@ -22,6 +22,7 @@ namespace Test.Domain.Handlers
         {
             _productRepository = new Mock<IProductRepository>();
             _productRepository.Setup(x => x.Create(It.IsAny<Product>())).Returns(1);
+            _historyHandleMock = new Mock<IHandler<CreateHistoryCommand>>();
 
         }
 
