@@ -35,10 +35,16 @@ namespace Infra.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("HistoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -58,6 +64,9 @@ namespace Infra.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("HistoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -68,6 +77,9 @@ namespace Infra.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<int>("StockId")
                         .HasColumnType("int");
 
@@ -76,6 +88,101 @@ namespace Infra.Migrations
                     b.HasIndex("StockId");
 
                     b.ToTable("TB_CLIENT", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entitys.History", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId")
+                        .IsUnique();
+
+                    b.HasIndex("ClientId")
+                        .IsUnique();
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("OrderItemId")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.HasIndex("StockId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("TB_HISTORY", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entitys.HistoryField", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CurrentValue")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)");
+
+                    b.Property<int>("HistoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HistoryId");
+
+                    b.ToTable("TB_HISTORYFIELD", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entitys.Order", b =>
@@ -91,6 +198,12 @@ namespace Infra.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("HistoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
@@ -109,6 +222,9 @@ namespace Infra.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HistoryId")
+                        .HasColumnType("int");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -147,6 +263,9 @@ namespace Infra.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("HistoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -154,6 +273,9 @@ namespace Infra.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("StockId")
                         .HasColumnType("int");
@@ -179,6 +301,9 @@ namespace Infra.Migrations
                     b.Property<decimal>("AvaragePrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("HistoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -187,12 +312,42 @@ namespace Infra.Migrations
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("TotalValue")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.ToTable("TB_STOCK", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entitys.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HistoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Domain.Entitys.Client", b =>
@@ -204,6 +359,76 @@ namespace Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("Stock");
+                });
+
+            modelBuilder.Entity("Domain.Entitys.History", b =>
+                {
+                    b.HasOne("Domain.Entitys.Category", "Category")
+                        .WithOne("History")
+                        .HasForeignKey("Domain.Entitys.History", "CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entitys.Client", "Client")
+                        .WithOne("History")
+                        .HasForeignKey("Domain.Entitys.History", "ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entitys.Order", "Order")
+                        .WithOne("History")
+                        .HasForeignKey("Domain.Entitys.History", "OrderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entitys.OrderItem", "OrderItem")
+                        .WithOne("History")
+                        .HasForeignKey("Domain.Entitys.History", "OrderItemId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entitys.Product", "Product")
+                        .WithOne("History")
+                        .HasForeignKey("Domain.Entitys.History", "ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entitys.Stock", "Stock")
+                        .WithOne("History")
+                        .HasForeignKey("Domain.Entitys.History", "StockId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entitys.User", "User")
+                        .WithOne("History")
+                        .HasForeignKey("Domain.Entitys.History", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("OrderItem");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Stock");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entitys.HistoryField", b =>
+                {
+                    b.HasOne("Domain.Entitys.History", "History")
+                        .WithMany("Fields")
+                        .HasForeignKey("HistoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("History");
                 });
 
             modelBuilder.Entity("Domain.Entitys.Order", b =>
@@ -257,21 +482,44 @@ namespace Infra.Migrations
 
             modelBuilder.Entity("Domain.Entitys.Category", b =>
                 {
+                    b.Navigation("History")
+                        .IsRequired();
+
                     b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Domain.Entitys.Client", b =>
                 {
+                    b.Navigation("History")
+                        .IsRequired();
+
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Domain.Entitys.History", b =>
+                {
+                    b.Navigation("Fields");
                 });
 
             modelBuilder.Entity("Domain.Entitys.Order", b =>
                 {
+                    b.Navigation("History")
+                        .IsRequired();
+
                     b.Navigation("Itens");
+                });
+
+            modelBuilder.Entity("Domain.Entitys.OrderItem", b =>
+                {
+                    b.Navigation("History")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entitys.Product", b =>
                 {
+                    b.Navigation("History")
+                        .IsRequired();
+
                     b.Navigation("OrderItems");
                 });
 
@@ -279,7 +527,16 @@ namespace Infra.Migrations
                 {
                     b.Navigation("ClientObservers");
 
+                    b.Navigation("History")
+                        .IsRequired();
+
                     b.Navigation("Product")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entitys.User", b =>
+                {
+                    b.Navigation("History")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

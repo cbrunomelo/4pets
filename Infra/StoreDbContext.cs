@@ -20,7 +20,7 @@ namespace Infra
         {
             //C:\Users\zois\source\repos\4pets
 
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-D4J5F0T\SQLEXPRESS;Database=4pets;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer(@"Server=localhost\SQLEXPRESS;Database=4pets;Trusted_Connection=True;TrustServerCertificate=True;");
 
         }
 
@@ -29,7 +29,9 @@ namespace Infra
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Category> Categories { get; set; }
-
+        public DbSet<Stock> Stocks { get; set; }
+        public DbSet<History> Histories { get; set; }
+        public DbSet<HistoryField> HistoryFields { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +41,9 @@ namespace Infra
             modelBuilder.ApplyConfiguration(new OrderItemMapping());
             modelBuilder.ApplyConfiguration(new CategoryMapping());
             modelBuilder.ApplyConfiguration(new StockMapping());
+            modelBuilder.ApplyConfiguration(new HistoryMapping());
+            modelBuilder.ApplyConfiguration(new HistoryFieldMapping());
+
 
         }
     }

@@ -11,7 +11,7 @@ namespace Test.Domain.Handlers.Data
     {
         public static IEnumerable<object[]> GetData()
         {
-            yield return new object[] { new CreateCategoryCommand("Category 1", "Description 1") };
+            yield return new object[] { new CreateCategoryCommand("Category 1", "Description 1", 1) };
         }
     }
 }

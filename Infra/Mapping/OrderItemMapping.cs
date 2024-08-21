@@ -19,6 +19,8 @@ namespace Infra.Mapping
             builder.Property(x => x.Total).IsRequired();
             builder.HasOne(x => x.Product).WithMany(x => x.OrderItems).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(x => x.Order).WithMany(x => x.Itens).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.History).WithOne(x => x.OrderItem).HasForeignKey<History>(x => x.OrderItemId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

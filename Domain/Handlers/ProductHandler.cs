@@ -1,5 +1,7 @@
 ﻿using Domain.Commands;
+using Domain.Commands.HistoryCommands;
 using Domain.Entitys;
+using Domain.Entitys.Enuns;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
@@ -14,10 +16,12 @@ namespace Domain.Handlers
     public class ProductHandler : IHandler<CreateProductCommands>
     {
         private readonly IProductRepository _repository;
+        private readonly IHandler<CreateHistoryCommand> _historyHandle;
 
-        public ProductHandler(IProductRepository repository)
+        public ProductHandler(IProductRepository repository, IHandler<CreateHistoryCommand> historyHandle)
         {
             _repository = repository;
+            this._historyHandle = historyHandle;
         }
 
         public IHandleResult Handle(CreateProductCommands command)
@@ -39,6 +43,7 @@ namespace Domain.Handlers
 
             product.SetId(id);
 
+            _historyHandle.Handle(new CreateHistoryCommand(command, product, null, EHistoryAction.Insert));
             return new HandleResult(true, "Produto criado com sucesso", product);
         }
 

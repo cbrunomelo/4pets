@@ -20,6 +20,8 @@ namespace Infra.Mapping
             builder.Property(x => x.Description).IsRequired().HasMaxLength(200);
             builder.Property(x => x.CategoryId).IsRequired();
             builder.HasOne(x => x.Category).WithMany(List => List.Products).HasForeignKey(x => x.CategoryId);
+            builder.HasOne(x => x.History).WithOne(x => x.Product).HasForeignKey<History>(x => x.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

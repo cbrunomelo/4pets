@@ -18,6 +18,8 @@ namespace Infra.Mapping
             builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
             builder.Property(x => x.Email).IsRequired().HasMaxLength(100);
             builder.Property(x => x.Phone).IsRequired().HasMaxLength(20);
+            builder.HasOne(x => x.History).WithOne(x => x.Client).HasForeignKey<History>(x => x.ClientId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

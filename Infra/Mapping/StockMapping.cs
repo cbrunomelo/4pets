@@ -21,6 +21,8 @@ namespace Infra.Mapping
             builder.Property(x => x.TotalValue).IsRequired();
             builder.HasOne(x => x.Product).WithOne(x => x.Stock);//.HasForeignKey<Product>(x => x.StockId);
             builder.HasMany(x => x.ClientObservers).WithOne(x => x.Stock);
+            builder.HasOne(x => x.History).WithOne(x => x.Stock).HasForeignKey<History>(x => x.StockId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -7,19 +7,6 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands
 {
-    public class CreateProductCommands : ICommand
-    {
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string Description { get; set; }
-        public int CategoryId { get; set; }
+    public record CreateProductCommands(string Name, decimal Price, string Description, int CategoryId, int UserId) : ICommand;
 
-        public CreateProductCommands(string name, decimal price, string description, int categoryId)
-        {
-            Name = name;
-            Price = price;
-            Description = description;
-            CategoryId = categoryId;
-        }
-    }
 }
