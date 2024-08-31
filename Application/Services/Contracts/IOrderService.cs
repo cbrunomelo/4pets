@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Application.Dtos;
+using Application.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,6 @@ namespace Application.Services.Contracts
 {
     public interface IOrderService
     {
+        IResultService Create(OrderDto orderDto);
     }
 }

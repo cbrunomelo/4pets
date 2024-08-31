@@ -1,4 +1,4 @@
-﻿using Application.Dtos;
+﻿using Application.Dtos.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Messaging
 {
-    internal interface IResultService
+    public interface IResultService
     {
         IDto Result { get; }
         bool Sucess { get; }
