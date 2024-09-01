@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Handlers
 {
-    public class ProductHandler : IHandler<CreateProductCommands>
+    public class ProductHandler : IHandler<CreateProductCommand>
     {
         private readonly IProductRepository _repository;
         private readonly IHandler<CreateHistoryCommand> _historyHandle;
@@ -24,7 +24,7 @@ namespace Domain.Handlers
             this._historyHandle = historyHandle;
         }
 
-        public IHandleResult Handle(CreateProductCommands command)
+        public IHandleResult Handle(CreateProductCommand command)
         {
             Product product = new Product(command.Name, command.Price, command.Description, command.CategoryId);
 
