@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands
 {
-    public record CreateProductCommands(string Name, decimal Price, string Description, int CategoryId, int UserId) : ICommand;
+    public record CreateProductCommand(string Name, decimal Price, string Description, int CategoryId, int UserId) : ICommand;
 
 }
