@@ -9,16 +9,16 @@ namespace Application.Messaging
 {
     public class ResultService : IResultService
     {
-        public IDto Result { get; set; }
+        public IDto Data { get; set; }
         public bool Sucess { get; set; }
         public string Message { get; set; }
         public List<string> Errors { get; set; } = new List<string>();
 
-        public ResultService(bool sucess, string message, IDto result)
+        public ResultService(bool sucess, string message, IDto data)
         {
             Sucess = sucess;
             Message = message;
-            Result = result;
+            Data = data;
         }
 
         public ResultService(bool sucess, string message, List<string> errors)
