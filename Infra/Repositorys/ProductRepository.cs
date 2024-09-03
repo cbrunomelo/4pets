@@ -22,11 +22,12 @@ namespace Infra.Repositorys
             {
                 _context.Products.Add(product);
                 _context.SaveChanges();
+                throw new Exception();
                 return product.Id;
             }
             catch (Exception ex)
             {
-                return 0;
+                throw;
             }
         }
 

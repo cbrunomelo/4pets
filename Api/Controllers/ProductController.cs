@@ -4,6 +4,7 @@ using Application.Services;
 using Domain.Commands.HistoryCommands;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -46,12 +47,20 @@ namespace Api.Controllers
         [HttpPost]
         public ActionResult<IResultService> Post([FromBody] ProductDto newProduct)
         {
-            // usuario vem do token, depois eu implemento
-            var usuarioId = 2;
-            var result = _productService.CreateProduct(newProduct, usuarioId);
-            if(result.Sucess)            
-                return Ok(result);
-            return BadRequest(result);
+            try
+            { 
+                // usuario vem do token, depois eu implemento
+                var usuarioId = 2;
+                var result = _productService.CreateProduct(newProduct, usuarioId);
+                if(result.Sucess)            
+                    return Created($"/api/product/{(result.Data as ProductDto)?.Id }", result);
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultService(false, "Falha Interna", "001x00"));
+            }
+
         }
 
         // PUT api/<ProductController>/5

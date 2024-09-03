@@ -34,10 +34,6 @@ namespace Application.Services
         }
         public IResultService CreateProduct(ProductDto product, int userId)
         {
-            //var command = _mapper.Map<CreateProductCommand>(product);
-            //var result = _productHandler.Handle(command);
-            //return _mapper.Map<ResultService>(result);
-
             var command = new CreateProductCommand(product.Name
                                                    ,product.Price
                                                    ,product.Description
