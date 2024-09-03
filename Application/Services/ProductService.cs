@@ -21,9 +21,10 @@ namespace Application.Services
         private readonly ProductHandler _productHandler;
         private IMapper _mapper;
         public ProductService(IProductRepository productRepository
-                             ,IHandler<CreateHistoryCommand> historyHandler)
+                             ,IHandler<CreateHistoryCommand> historyHandler
+                             ,ICategoryRepository categoryRepo)
         {
-            _productHandler = new ProductHandler(productRepository, historyHandler);
+            _productHandler = new ProductHandler(productRepository, historyHandler, categoryRepo);
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ProductDto, CreateProductCommand>();
@@ -51,7 +52,7 @@ namespace Application.Services
                     (result.Data as Product).Name,
                     (result.Data as Product).Description,
                     (result.Data as Product).Price,
-                    (result.Data as Product).CategoryId
+                    (result.Data as Product).CategoryId ?? 0
                 );
 
                 return new ResultService(true, "Success", productDto);

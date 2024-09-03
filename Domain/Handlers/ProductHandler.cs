@@ -17,11 +17,14 @@ namespace Domain.Handlers
     {
         private readonly IProductRepository _repository;
         private readonly IHandler<CreateHistoryCommand> _historyHandle;
-
-        public ProductHandler(IProductRepository repository, IHandler<CreateHistoryCommand> historyHandle)
+        private readonly ICategoryRepository _categoryRepository;
+        public ProductHandler(IProductRepository repository, 
+                             IHandler<CreateHistoryCommand> historyHandle
+                             ,ICategoryRepository categoryRepo)
         {
             _repository = repository;
-            this._historyHandle = historyHandle;
+            _historyHandle = historyHandle;
+            _categoryRepository = categoryRepo;
         }
 
         public IHandleResult Handle(CreateProductCommand command)
@@ -35,7 +38,10 @@ namespace Domain.Handlers
 
             if (_repository.VerifyProductExist(product.Name))
                 return new HandleResult("Não foi possivel criar o produto", "Nome do produto já cadastrado");
-            
+
+            if (!_categoryRepository.VerifyCategoryExist(product.CategoryId))
+                return new HandleResult("Não foi possivel criar o produto", "Categoria não encontrada");
+
             int id = _repository.Create(product);
 
             if (id == 0)

@@ -27,6 +27,7 @@ namespace Application
             services.AddScoped<IHistoryRepository, HistoryRepository>();
             services.AddScoped<IHistoryFieldRepository, HistoryFieldsRepository>();
             services.AddScoped<IStockRepository, StockRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
             return services;
         }
     }

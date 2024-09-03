@@ -73,5 +73,17 @@ namespace Infra.Repositorys
                 return false;
             }
         }
+
+        public bool VerifyCategoryExist(int? categoryId)
+        {
+            try
+            {
+                return _context.Categories.Any(c => c.Id == categoryId);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

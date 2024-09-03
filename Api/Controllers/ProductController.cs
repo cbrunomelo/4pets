@@ -16,9 +16,10 @@ namespace Api.Controllers
     {
         private readonly ProductService _productService;
         public ProductController(IProductRepository productRepository
-                                ,IHandler<CreateHistoryCommand> historyHandler)
+                                ,IHandler<CreateHistoryCommand> historyHandler
+                                ,ICategoryRepository categoryRepo)
         {
-            _productService = new ProductService(productRepository, historyHandler);
+            _productService = new ProductService(productRepository, historyHandler, categoryRepo);
         }
 
         // GET: api/<ProductController>
