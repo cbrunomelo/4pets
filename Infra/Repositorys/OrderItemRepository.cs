@@ -1,5 +1,6 @@
 ﻿using Domain.Entitys;
 using Domain.Repository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,7 @@ namespace Infra.Repositorys
             {
                 foreach (var item in itens)
                 {
-                    item.Product = _context.Products.Find(item.ProductId);
-                    item.Product.Stock = _context.Stocks.Find(item.Product.StockId);
+                    item.Product = _context.Products.Include(Product => Product.Stock).FirstOrDefault(x => x.Id == item.ProductId);
                 }
             }
             catch (Exception ex)

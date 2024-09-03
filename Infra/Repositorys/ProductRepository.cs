@@ -47,11 +47,9 @@ namespace Infra.Repositorys
         {
             try
             {
-                foreach (var item in itens)
-                {
-                    item.Product = _context.Products.Find(item.ProductId);
-                    item.Product.Stock = _context.Stocks.Find(item.Product.StockId);
-                }
+
+                _context.OrderItems.Include(x => x.Product).ThenInclude(x => x.Stock).Where(x => itens.Select(x => x.ProductId).Contains(x.ProductId)).ToList();
+
             }
             catch (Exception ex)
             {
