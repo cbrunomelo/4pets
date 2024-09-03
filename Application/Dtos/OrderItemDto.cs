@@ -18,7 +18,7 @@ namespace Application.Dtos
             get
             {
                 if (Product is not null)
-                    return Product.Value * Quantity;
+                    return Product.Price * Quantity;
                 return 0;
             }
         }

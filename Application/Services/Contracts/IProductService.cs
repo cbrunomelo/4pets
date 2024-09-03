@@ -11,7 +11,7 @@ namespace Application.Services.Contracts
     internal interface IProductService
     {        
         IResultService GetProduct(ProductDto product);
-        IResultService CreateProduct(ProductDto product);
+        IResultService CreateProduct(ProductDto product, int userId);
         IResultService UpdateProduct(ProductDto product);
         IResultService DeleteProduct(ProductDto product);
         

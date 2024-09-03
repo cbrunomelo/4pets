@@ -9,7 +9,7 @@ namespace Application.Messaging
 {
     public interface IResultService
     {
-        IDto Result { get; }
+        IDto Data { get; }
         bool Sucess { get; }
         string Message { get; }
         List<string> Errors { get; }
