@@ -7,69 +7,93 @@ using Domain.Commands.HistoryCommands;
 using Domain.Entitys;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
+using Domain.Queries;
 using Domain.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Services
+namespace Application.Services;
+
+public class ProductService : IProductService
 {
-    public class ProductService : IProductService
+    private readonly ProductHandler _productHandler;
+    private readonly IProductQuery _productQuery;
+    private IMapper _mapper;
+    public ProductService(IProductRepository productRepository
+                         , IHandler<CreateHistoryCommand> historyHandler
+                         , ICategoryRepository categoryRepo
+                         , IProductQuery productQuery)
     {
-        private readonly ProductHandler _productHandler;
-        private IMapper _mapper;
-        public ProductService(IProductRepository productRepository
-                             ,IHandler<CreateHistoryCommand> historyHandler
-                             ,ICategoryRepository categoryRepo)
+        _productQuery = productQuery;
+        _productHandler = new ProductHandler(productRepository, historyHandler, categoryRepo);
+        var config = new MapperConfiguration(cfg =>
         {
-            _productHandler = new ProductHandler(productRepository, historyHandler, categoryRepo);
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ProductDto, CreateProductCommand>();
-            });
+            cfg.CreateMap<ProductDto, CreateProductCommand>();
+        });
 
-            _mapper = config.CreateMapper();
+        _mapper = config.CreateMapper();
+    }
+    public IResultService CreateProduct(ProductDto product, int userId)
+    {
+        var command = new CreateProductCommand(product.Name
+                                               , product.Price
+                                               , product.Description
+                                               , product.Category
+                                               , userId);
+        var result = _productHandler.Handle(command);
+        if (result.Sucess)
+        {
+            var productDto = new ProductDto
+            (
+                (result.Data as Product).Id,
+                (result.Data as Product).Name,
+                (result.Data as Product).Description,
+                (result.Data as Product).Price,
+                (result.Data as Product).CategoryId ?? 0
+            );
+
+            return new ResultService(true, "Success", productDto);
         }
-        public IResultService CreateProduct(ProductDto product, int userId)
-        {
-            var command = new CreateProductCommand(product.Name
-                                                   ,product.Price
-                                                   ,product.Description
-                                                   ,product.Category
-                                                   ,userId);
-            var result = _productHandler.Handle(command);
-            if (result.Sucess)
-            {
-                var productDto = new ProductDto
-                (
-                    (result.Data as Product).Id,
-                    (result.Data as Product).Name,
-                    (result.Data as Product).Description,
-                    (result.Data as Product).Price,
-                    (result.Data as Product).CategoryId ?? 0
-                );
+        return new ResultService(false, "Error", result.Errors);
+    }
 
-                return new ResultService(true, "Success", productDto);
-            }
-            return new ResultService(false, "Error", result.Errors);
+    public IResultService DeleteProduct(ProductDto product)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IResultService GetProduct(ProductDto product)
+    {
+        throw new NotImplementedException();
+
+    }
+
+    public IResultService GetById(int id, int userId)
+    {
+        try
+        {
+            var product = _productQuery.GetById(id);
+            if (product == null)
+                return new ResultService(false, "Product not found", "001x00");
+
+            var productDto = new ProductDto
+            (
+                product.Id,
+                product.Name,
+                product.Description,
+                product.Price,
+                product.CategoryId ?? 0
+            );
+
+            return new ResultService(true, "Success", productDto);
         }
-
-        public IResultService DeleteProduct(ProductDto product)
+        catch (Exception ex)
         {
-            throw new NotImplementedException();
-        }
-
-        public IResultService GetProduct(ProductDto product)
-        {
-            throw new NotImplementedException();
-
-        }
-
-        public IResultService UpdateProduct(ProductDto product)
-        {
-            throw new NotImplementedException();
+            return new ResultService(false, "Internal Error", "001x00");
         }
     }
+
+    public IResultService UpdateProduct(ProductDto product)
+    {
+        throw new NotImplementedException();
+    }
 }
+
