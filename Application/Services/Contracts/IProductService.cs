@@ -14,7 +14,7 @@ namespace Application.Services.Contracts
         IResultService CreateProduct(ProductDto product, int userId);
         IResultService UpdateProduct(ProductDto product);
         IResultService DeleteProduct(ProductDto product);
-        
 
+        IResultService GetProductById(int id);
     }
 }

@@ -38,9 +38,19 @@ namespace Api.Controllers
 
         // GET api/<ProductController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<IResultService> Get(int id)
         {
-            throw new Exception();            
+            try
+            {
+                var result = _productService.GetProductById(id);
+                if (result.Sucess)
+                    return Ok(result);
+                return NotFound(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ResultService(false, "Falha Interna", "001x00"));
+            }
         }
 
         // POST api/<ProductController>

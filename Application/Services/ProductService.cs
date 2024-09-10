@@ -7,6 +7,7 @@ using Domain.Commands.HistoryCommands;
 using Domain.Entitys;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
+using Domain.Queries.ProductQueries;
 using Domain.Repository;
 using System;
 using System.Collections.Generic;
@@ -65,6 +66,26 @@ namespace Application.Services
         {
             throw new NotImplementedException();
 
+        }
+
+        public IResultService GetProductById(int id, int userId)
+        {
+            var command = new GetProductById(id, userId);
+            var result = _productHandler.Handle(command);
+            if (result.Sucess)
+            {
+                var productDto = new ProductDto
+                (
+                    (result.Data as Product).Id,
+                    (result.Data as Product).Name,
+                    (result.Data as Product).Description,
+                    (result.Data as Product).Price,
+                    (result.Data as Product).CategoryId ?? 0
+                );
+
+                return new ResultService(true, "Success", productDto);
+            }
+            return new ResultService(false, "Error", result.Errors);
         }
 
         public IResultService UpdateProduct(ProductDto product)
