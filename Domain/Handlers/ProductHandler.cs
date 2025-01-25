@@ -53,5 +53,30 @@ namespace Domain.Handlers
             return new HandleResult(true, "Produto criado com sucesso", product);
         }
 
+        public IHandleResult Handle(UpdateProductCommand command)
+        {
+            Product productNew = _repository.GetById(command.Id);
+
+            if (productNew == null)
+                return new HandleResult("Não foi possivel atualizar o produto", "Produto não encontrado");
+
+            Product productOld = productNew.Copy();
+
+            productNew.Update(command.Name, command.Price, command.Description, command.CategoryId);
+
+            var produtcValidate = new ProductValidation().Validate(productNew);
+
+            if (!produtcValidate.IsValid)
+                return new HandleResult("Por favor corrija os campos abaixo", produtcValidate.Errors.Select(x => x.ErrorMessage).ToList());
+
+            if (!_categoryRepository.VerifyCategoryExist(productNew.CategoryId))
+                return new HandleResult("Não foi possivel atualizar o produto", "Categoria não encontrada");
+
+            _repository.Update(productNew);
+
+            _historyHandle.Handle(new CreateHistoryCommand(command, productNew, productOld, EHistoryAction.Update));
+            return new HandleResult(true, "Produto atualizado com sucesso", productNew);
+        }
+
     }
 }

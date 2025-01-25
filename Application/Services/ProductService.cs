@@ -24,12 +24,7 @@ public class ProductService : IProductService
     {
         _productQuery = productQuery;
         _productHandler = new ProductHandler(productRepository, historyHandler, categoryRepo);
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<ProductDto, CreateProductCommand>();
-        });
-
-        _mapper = config.CreateMapper();
+        _mapper = AutoMapperConfiguration.Get();
     }
     public IResultService CreateProduct(ProductDto product, int userId)
     {
@@ -91,9 +86,32 @@ public class ProductService : IProductService
         }
     }
 
-    public IResultService UpdateProduct(ProductDto product)
-    {
-        throw new NotImplementedException();
+    public IResultService UpdateProduct(ProductDto product, int usuarioId)
+     {
+        try
+        {
+            var command = _mapper.Map<UpdateProductCommand>(product, opt => opt.Items["UserId"] = usuarioId);
+            var result = _productHandler.Handle(command);
+            if (result.Sucess)
+            {
+                var productDto = new ProductDto
+                (
+                 (result.Data as Product).Id,
+                (result.Data as Product).Name,
+           (result.Data as Product).Description,
+               (result.Data as Product).Price,
+             (result.Data as Product).CategoryId ?? 0
+                );
+
+                return new ResultService(true, "Success", productDto);
+            }
+            return new ResultService(false, result.Message, result.Errors);
+        }
+        catch
+        {
+            return new ResultService(false, "Internal Error", "001x00");
+        }
     }
+
 }
 

@@ -6,7 +6,7 @@ internal interface IProductService
 {
     IResultService GetProduct(ProductDto product);
     IResultService CreateProduct(ProductDto product, int userId);
-    IResultService UpdateProduct(ProductDto product);
+    IResultService UpdateProduct(ProductDto product, int userId);
     IResultService DeleteProduct(ProductDto product);
     IResultService GetById(int id, int userId);
 }

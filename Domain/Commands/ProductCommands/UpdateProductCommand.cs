@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Commands.CategoryCommands
+namespace Domain.Commands
 {
-    public record CreateCategoryCommand(string Name, string Description, int UserId) : ICommand;
-
+public record UpdateProductCommand(int Id, string Name, decimal Price, string Description, int CategoryId, int UserId) : ICommand;
 }

@@ -14,5 +14,7 @@ namespace Domain.Repository
         bool VerifyProductExist(string name);
 
         void LoadStock(List<OrderItem> itens);
+        Product GetById(int id);
+        void Update(Product product);
     }
 }

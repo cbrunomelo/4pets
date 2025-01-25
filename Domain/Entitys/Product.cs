@@ -16,7 +16,7 @@ namespace Domain.Entitys
         public List<OrderItem> OrderItems { get; private set; }
         //public int StockId { get; private set; }
         public Stock? Stock { get; set; }
-        public Product(string name, decimal price, string description, int categoryid)
+        public Product(string name, decimal price, string description, int? categoryid)
         {
             Name = name;
             Price = price;
@@ -36,6 +36,27 @@ namespace Domain.Entitys
         public void SetId(int id)
         {
             Id = id;
+        }
+
+        public void Update(string name, decimal price, string description, int categoryId)
+        {
+            Name = name;
+            Price = price;
+            Description = description;
+            CategoryId = categoryId;
+        }
+
+
+        internal Product Copy()
+        {
+            var product = new Product();
+            product.Name = Name;
+            product.Price = Price;
+            product.Description = Description;
+            product.CategoryId = CategoryId;
+            product.Id = Id;
+            return product;
+
         }
 
     }

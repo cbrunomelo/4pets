@@ -1,4 +1,5 @@
 ﻿using Domain.Entitys;
+using Domain.Queries;
 using Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,13 +10,15 @@ using System.Threading.Tasks;
 
 namespace Infra.Repositorys
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : IProductRepository, IProductQuery
     {
         private readonly StoreDbContext _context;
         public ProductRepository()
         {
             _context = new StoreDbContext();
         }
+
+
         public int Create(Product product)
         {
             try
@@ -28,6 +31,24 @@ namespace Infra.Repositorys
             {
                 throw;
             }
+        }
+
+        public Product GetById(int id)
+        {
+            try
+            {
+                return _context.Products
+                                .FirstOrDefault(x => x.Id == id);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public Product GetProduct(Product product)
+        {
+            throw new NotImplementedException();
         }
 
         public List<Product> GetUnavailables(List<Product> products)
@@ -54,6 +75,24 @@ namespace Infra.Repositorys
             catch (Exception ex)
             {
             }
+        }
+
+        public void Update(Product product)
+        {
+            try
+            {
+                var prod = _context.Products.FirstOrDefault(x => x.Id == product.Id);
+                if (prod != null)
+                {
+                    prod.Update(product.Name, product.Price, product.Description, product.CategoryId.Value);
+                    _context.SaveChanges();
+                }
+
+            }
+            catch (Exception ex)
+            {
+            }
+
         }
 
         public bool VerifyProductExist(string name)

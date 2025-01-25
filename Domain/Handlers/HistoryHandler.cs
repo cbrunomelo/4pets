@@ -31,26 +31,22 @@ namespace Domain.Handlers
             if (!validationResult.IsValid)
                 return new HandleResult("Histórico inválido!", validationResult.Errors.Select(x => x.ErrorMessage).ToList());
 
-            int historyID = 0;
-            if (command.Action == EHistoryAction.Insert)
+            int historyID = _repo.GetHistoryId(command.CurrentEntity);
+            if (historyID == 0)
             {
                 historyID = _repo.Create(history);
             }
 
-            if ( command.Action == EHistoryAction.Update)
-            {
-                historyID = _repo.GetHistoryId(command.CurrentEntity);
-            }
             if (historyID == 0)
                 return new HandleResult("Não foi possivel criar histórico.", "Erro interno 00x001");
 
-            foreach (var field in command.CurrentEntity.GetType().GetType().GetProperties())
+            foreach (var field in command.CurrentEntity.GetType().GetProperties())
             {
                 var currentValue = field.GetValue(command.CurrentEntity)?.ToString();
                 var oldValue = command.OldEntity?.GetType().GetProperty(field.Name)?.GetValue(command.OldEntity)?.ToString();
                 if (currentValue != oldValue)
                 {
-                    var historyField = new HistoryField(historyID, command.command.UserId, command.Action, field.Name, currentValue);
+                    var historyField = new HistoryField(historyID, command.command.UserId, command.Action, field.Name, currentValue, oldValue);
                     var fieldId = _repoField.Create(historyField);
                     if (fieldId == 0)
                         return new HandleResult("Não foi possivel criar histórico.", "Erro interno 00x002");
