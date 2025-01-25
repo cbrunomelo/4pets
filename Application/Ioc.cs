@@ -3,6 +3,7 @@ using Application.Services.Contracts;
 using Domain.Commands.HistoryCommands;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
+using Domain.Queries;
 using Domain.Repository;
 using Infra.Repositorys;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,7 @@ namespace Application
             services.AddScoped<IHistoryFieldRepository, HistoryFieldsRepository>();
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductQuery, ProductRepository>();
             return services;
         }
     }

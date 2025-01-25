@@ -8,6 +8,5 @@ namespace Domain.Queries.Contracts
 {
     public interface IQuery
     {
-        int UserId { get; init; }
     }
 }
