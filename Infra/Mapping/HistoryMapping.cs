@@ -15,10 +15,7 @@ namespace Infra.Mapping
         {
             builder.ToTable("TB_HISTORY");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.UserId).IsRequired().HasColumnType("int");
             builder.HasMany(x => x.Fields).WithOne(x => x.History);
-            builder.HasOne(x => x.User).WithOne(x => x.History).HasForeignKey<History>(x => x.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(x => x.Category).WithOne(x => x.History).OnDelete(DeleteBehavior.NoAction);
 
 

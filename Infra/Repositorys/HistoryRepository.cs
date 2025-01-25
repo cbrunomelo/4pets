@@ -12,7 +12,7 @@ namespace Infra.Repositorys
     {
         private readonly StoreDbContext _context;
         private Entity _entity;
-        private Dictionary<Type, Func<History, object>> _fields = new Dictionary<Type, Func<History, object>>();
+        private Dictionary<Type, Func<History, bool>> _fields = new Dictionary<Type, Func<History, bool>>();
         public HistoryRepository()
         {
             _context = new StoreDbContext();
@@ -38,7 +38,9 @@ namespace Infra.Repositorys
             try
             {
                 _entity = entity;
-                return _context.Histories.FirstOrDefault(x => _fields[entity.GetType()](x).Equals(entity.Id)).Id;
+
+                var predicate = _fields[entity.GetType()];
+                return _context.Histories.FirstOrDefault(predicate).Id;
             }
             catch (Exception ex)
             {
@@ -55,7 +57,6 @@ namespace Infra.Repositorys
             _fields.Add(typeof(OrderItem), x => x.OrderItemId == _entity.Id);
             _fields.Add(typeof(Product), x => x.ProductId == _entity.Id);
             _fields.Add(typeof(Stock), x => x.StockId == _entity.Id);
-            _fields.Add(typeof(User), x => x.UserId == _entity.Id);
 
         }
     }

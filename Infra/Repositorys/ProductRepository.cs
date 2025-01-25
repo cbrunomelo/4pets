@@ -77,6 +77,24 @@ namespace Infra.Repositorys
             }
         }
 
+        public void Update(Product product)
+        {
+            try
+            {
+                var prod = _context.Products.FirstOrDefault(x => x.Id == product.Id);
+                if (prod != null)
+                {
+                    prod.Update(product.Name, product.Price, product.Description, product.CategoryId.Value);
+                    _context.SaveChanges();
+                }
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+        }
+
         public bool VerifyProductExist(string name)
         {
             try

@@ -12,9 +12,6 @@ namespace Domain.Validation
     {
         public HistoryValidation()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty()
-                .WithMessage("UserId is required");
 
         }
 

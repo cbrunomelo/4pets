@@ -18,6 +18,7 @@ namespace Infra.Mapping
             builder.Property(x => x.Action).IsRequired().HasColumnType("int");
             builder.Property(x => x.FieldName).IsRequired().HasMaxLength(60).HasColumnType("varchar(60)");
             builder.Property(x => x.CurrentValue).IsRequired().HasMaxLength(100).HasColumnType("varchar(100)");
+            builder.Property(x => x.PreviousValue).IsRequired().HasMaxLength(100).HasColumnType("varchar(100)");
             builder.HasOne(x => x.History).WithMany(x => x.Fields).HasForeignKey(x => x.HistoryId).OnDelete(DeleteBehavior.NoAction);
         }
     }

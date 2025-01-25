@@ -81,8 +81,22 @@ public class ProductController : ControllerBase
 
     // PUT api/<ProductController>/5
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public void Put(int id, [FromBody] ProductDto product)
     {
+        try
+        {
+            // usuario vem do token, depois eu implemento
+            var usuarioId = 2;
+            var result = _productService.UpdateProduct(product, usuarioId);
+            if (result.Sucess)
+                Ok(result);
+            BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            StatusCode(500, new ResultService(false, "Falha Interna", "001x00"));
+
+        }
     }
 
     // DELETE api/<ProductController>/5
