@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Commands.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,5 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.StockCommands
 {
-    public class EntryStockCommand
-    {
-        public int StockId { get; set; }
-        public decimal Quantity { get; set; }
-
-        public decimal TotalValue { get; set; }
-    }
+    public record EntryStockCommand(int StockId, decimal Quantity, decimal TotalValue, int UserId) : ICommand;
 }

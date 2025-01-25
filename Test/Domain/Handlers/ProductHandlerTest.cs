@@ -1,6 +1,8 @@
 ﻿using Domain.Commands;
+using Domain.Commands.HistoryCommands;
 using Domain.Entitys;
 using Domain.Handlers;
+using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Moq;
 using System;
@@ -15,19 +17,21 @@ namespace Test.Domain.Handlers
     public class ProductHandlerTest
     {
         private Mock<IProductRepository> _productRepository;
+        private readonly Mock<IHandler<CreateHistoryCommand>> _historyHandleMock;
         public ProductHandlerTest() 
         {
             _productRepository = new Mock<IProductRepository>();
             _productRepository.Setup(x => x.Create(It.IsAny<Product>())).Returns(1);
+            _historyHandleMock = new Mock<IHandler<CreateHistoryCommand>>();
 
         }
 
         [Theory]
         [MemberData(nameof(ValidProductData.GetData), MemberType = typeof(ValidProductData))]
-        public void CreateProductCommand_WithValidData_ShouldPass(CreateProductCommands command)
+        public void CreateProductCommand_WithValidData_ShouldPass(CreateProductCommand command)
         {
             // Arrange
-            var handler = new ProductHandler(_productRepository.Object);
+            var handler = new ProductHandler(_productRepository.Object, _historyHandleMock.Object);
 
             // Act
             var result = handler.Handle(command);
@@ -40,10 +44,10 @@ namespace Test.Domain.Handlers
 
         [Theory]
         [MemberData(nameof(InvalidProductData.GetData), MemberType = typeof(InvalidProductData))]
-        public void CreateProductCommand_WithInvalidData_ShouldFail(CreateProductCommands command)
+        public void CreateProductCommand_WithInvalidData_ShouldFail(CreateProductCommand command)
         {
             // Arrange
-            var handler = new ProductHandler(_productRepository.Object);
+            var handler = new ProductHandler(_productRepository.Object, _historyHandleMock.Object);
 
             // Act
             var result = handler.Handle(command);
@@ -56,11 +60,11 @@ namespace Test.Domain.Handlers
 
         [Theory]
         [MemberData(nameof(ValidProductData.GetData), MemberType = typeof(ValidProductData))]
-        public void CreateProductCommand_alreadyExist_ShouldFail(CreateProductCommands command)
+        public void CreateProductCommand_alreadyExist_ShouldFail(CreateProductCommand command)
         {
             // Arrange
             _productRepository.Setup(x => x.VerifyProductExist(It.IsAny<string>())).Returns(true);
-            var handler = new ProductHandler(_productRepository.Object);
+            var handler = new ProductHandler(_productRepository.Object, _historyHandleMock.Object);
 
             // Act
             var result = handler.Handle(command);
@@ -73,11 +77,11 @@ namespace Test.Domain.Handlers
 
         [Theory]
         [MemberData(nameof(ValidProductData.GetData), MemberType = typeof(ValidProductData))]
-        public void CreateProductCommand_WithRepositoryError_ShouldFail(CreateProductCommands command)
+        public void CreateProductCommand_WithRepositoryError_ShouldFail(CreateProductCommand command)
         {
             // Arrange
             _productRepository.Setup(x => x.Create(It.IsAny<Product>())).Returns(0);
-            var handler = new ProductHandler(_productRepository.Object);
+            var handler = new ProductHandler(_productRepository.Object, _historyHandleMock.Object);
 
             // Act
             var result = handler.Handle(command);

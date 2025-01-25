@@ -1,5 +1,7 @@
 ﻿using Domain.Commands;
+using Domain.Commands.HistoryCommands;
 using Domain.Entitys;
+using Domain.Entitys.Enuns;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
@@ -11,16 +13,21 @@ using System.Threading.Tasks;
 
 namespace Domain.Handlers
 {
-    public class ProductHandler : IHandler<CreateProductCommands>
+    public class ProductHandler : IHandler<CreateProductCommand>
     {
         private readonly IProductRepository _repository;
-
-        public ProductHandler(IProductRepository repository)
+        private readonly IHandler<CreateHistoryCommand> _historyHandle;
+        private readonly ICategoryRepository _categoryRepository;
+        public ProductHandler(IProductRepository repository, 
+                             IHandler<CreateHistoryCommand> historyHandle
+                             ,ICategoryRepository categoryRepo)
         {
             _repository = repository;
+            _historyHandle = historyHandle;
+            _categoryRepository = categoryRepo;
         }
 
-        public IHandleResult Handle(CreateProductCommands command)
+        public IHandleResult Handle(CreateProductCommand command)
         {
             Product product = new Product(command.Name, command.Price, command.Description, command.CategoryId);
 
@@ -31,7 +38,10 @@ namespace Domain.Handlers
 
             if (_repository.VerifyProductExist(product.Name))
                 return new HandleResult("Não foi possivel criar o produto", "Nome do produto já cadastrado");
-            
+
+            if (!_categoryRepository.VerifyCategoryExist(product.CategoryId))
+                return new HandleResult("Não foi possivel criar o produto", "Categoria não encontrada");
+
             int id = _repository.Create(product);
 
             if (id == 0)
@@ -39,6 +49,7 @@ namespace Domain.Handlers
 
             product.SetId(id);
 
+            _historyHandle.Handle(new CreateHistoryCommand(command, product, null, EHistoryAction.Insert));
             return new HandleResult(true, "Produto criado com sucesso", product);
         }
 

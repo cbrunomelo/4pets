@@ -1,0 +1,210 @@
+﻿IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+CREATE TABLE [TB_CATEGORY] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(100) NOT NULL,
+    [Description] nvarchar(200) NOT NULL,
+    CONSTRAINT [PK_TB_CATEGORY] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [TB_STOCK] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(100) NOT NULL,
+    [Quantity] decimal(18,2) NOT NULL,
+    [AvaragePrice] decimal(18,2) NOT NULL,
+    [TotalValue] decimal(18,2) NOT NULL,
+    CONSTRAINT [PK_TB_STOCK] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [TB_CLIENT] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(100) NOT NULL,
+    [Email] nvarchar(100) NOT NULL,
+    [Phone] nvarchar(20) NOT NULL,
+    [StockId] int NOT NULL,
+    CONSTRAINT [PK_TB_CLIENT] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TB_CLIENT_TB_STOCK_StockId] FOREIGN KEY ([StockId]) REFERENCES [TB_STOCK] ([Id]) ON DELETE CASCADE
+);
+GO
+
+CREATE TABLE [TB_PRODUCT] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(100) NOT NULL,
+    [Price] decimal(18,2) NOT NULL,
+    [Description] nvarchar(200) NOT NULL,
+    [CategoryId] int NOT NULL,
+    [StockId] int NOT NULL,
+    CONSTRAINT [PK_TB_PRODUCT] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TB_PRODUCT_TB_CATEGORY_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [TB_CATEGORY] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TB_PRODUCT_TB_STOCK_StockId] FOREIGN KEY ([StockId]) REFERENCES [TB_STOCK] ([Id]) ON DELETE CASCADE
+);
+GO
+
+CREATE TABLE [TB_ORDER] (
+    [Id] int NOT NULL IDENTITY,
+    [Date] datetime2 NOT NULL,
+    [Total] decimal(18,2) NOT NULL,
+    [ClientId] int NOT NULL,
+    CONSTRAINT [PK_TB_ORDER] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TB_ORDER_TB_CLIENT_ClientId] FOREIGN KEY ([ClientId]) REFERENCES [TB_CLIENT] ([Id]) ON DELETE CASCADE
+);
+GO
+
+CREATE TABLE [TB_ORDER_ITEM] (
+    [Id] int NOT NULL IDENTITY,
+    [ProductId] int NOT NULL,
+    [Quantity] int NOT NULL,
+    [Total] decimal(18,2) NOT NULL,
+    [OrderId] int NOT NULL,
+    CONSTRAINT [PK_TB_ORDER_ITEM] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TB_ORDER_ITEM_TB_ORDER_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [TB_ORDER] ([Id]),
+    CONSTRAINT [FK_TB_ORDER_ITEM_TB_PRODUCT_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [TB_PRODUCT] ([Id])
+);
+GO
+
+CREATE INDEX [IX_TB_CLIENT_StockId] ON [TB_CLIENT] ([StockId]);
+GO
+
+CREATE INDEX [IX_TB_ORDER_ClientId] ON [TB_ORDER] ([ClientId]);
+GO
+
+CREATE INDEX [IX_TB_ORDER_ITEM_OrderId] ON [TB_ORDER_ITEM] ([OrderId]);
+GO
+
+CREATE INDEX [IX_TB_ORDER_ITEM_ProductId] ON [TB_ORDER_ITEM] ([ProductId]);
+GO
+
+CREATE INDEX [IX_TB_PRODUCT_CategoryId] ON [TB_PRODUCT] ([CategoryId]);
+GO
+
+CREATE UNIQUE INDEX [IX_TB_PRODUCT_StockId] ON [TB_PRODUCT] ([StockId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240730224744_inicial', N'8.0.7');
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [TB_STOCK] ADD [HistoryId] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_STOCK] ADD [Status] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_PRODUCT] ADD [HistoryId] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_PRODUCT] ADD [Status] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_ORDER] ADD [HistoryId] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_ORDER] ADD [Status] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_CLIENT] ADD [HistoryId] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_CLIENT] ADD [Status] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_CATEGORY] ADD [HistoryId] int NOT NULL DEFAULT 0;
+GO
+
+ALTER TABLE [TB_CATEGORY] ADD [Status] int NOT NULL DEFAULT 0;
+GO
+
+CREATE TABLE [User] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [Email] nvarchar(max) NOT NULL,
+    [Status] int NOT NULL,
+    [HistoryId] int NOT NULL,
+    CONSTRAINT [PK_User] PRIMARY KEY ([Id])
+);
+GO
+
+CREATE TABLE [TB_HISTORY] (
+    [Id] int NOT NULL IDENTITY,
+    [CreateDate] datetime2 NOT NULL,
+    [UserId] int NOT NULL,
+    [CategoryId] int NOT NULL,
+    [ClientId] int NOT NULL,
+    [ProductId] int NOT NULL,
+    [OrderId] int NOT NULL,
+    [OrderItemId] int NOT NULL,
+    [StockId] int NOT NULL,
+    CONSTRAINT [PK_TB_HISTORY] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TB_HISTORY_TB_CATEGORY_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [TB_CATEGORY] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TB_HISTORY_TB_CLIENT_ClientId] FOREIGN KEY ([ClientId]) REFERENCES [TB_CLIENT] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TB_HISTORY_TB_ORDER_ITEM_OrderItemId] FOREIGN KEY ([OrderItemId]) REFERENCES [TB_ORDER_ITEM] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TB_HISTORY_TB_ORDER_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [TB_ORDER] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TB_HISTORY_TB_PRODUCT_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [TB_PRODUCT] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TB_HISTORY_TB_STOCK_StockId] FOREIGN KEY ([StockId]) REFERENCES [TB_STOCK] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_TB_HISTORY_User_UserId] FOREIGN KEY ([UserId]) REFERENCES [User] ([Id]) ON DELETE CASCADE
+);
+GO
+
+CREATE TABLE [TB_HISTORYFIELD] (
+    [Id] int NOT NULL IDENTITY,
+    [Action] int NOT NULL,
+    [FieldName] varchar(60) NOT NULL,
+    [CurrentValue] varchar(100) NOT NULL,
+    [HistoryId] int NOT NULL,
+    [Date] datetime2 NOT NULL,
+    [Status] int NOT NULL,
+    CONSTRAINT [PK_TB_HISTORYFIELD] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_TB_HISTORYFIELD_TB_HISTORY_HistoryId] FOREIGN KEY ([HistoryId]) REFERENCES [TB_HISTORY] ([Id]) ON DELETE CASCADE
+);
+GO
+
+CREATE UNIQUE INDEX [IX_TB_HISTORY_CategoryId] ON [TB_HISTORY] ([CategoryId]);
+GO
+
+CREATE UNIQUE INDEX [IX_TB_HISTORY_ClientId] ON [TB_HISTORY] ([ClientId]);
+GO
+
+CREATE UNIQUE INDEX [IX_TB_HISTORY_OrderId] ON [TB_HISTORY] ([OrderId]);
+GO
+
+CREATE INDEX [IX_TB_HISTORY_OrderItemId] ON [TB_HISTORY] ([OrderItemId]);
+GO
+
+CREATE UNIQUE INDEX [IX_TB_HISTORY_ProductId] ON [TB_HISTORY] ([ProductId]);
+GO
+
+CREATE UNIQUE INDEX [IX_TB_HISTORY_StockId] ON [TB_HISTORY] ([StockId]);
+GO
+
+CREATE UNIQUE INDEX [IX_TB_HISTORY_UserId] ON [TB_HISTORY] ([UserId]);
+GO
+
+CREATE INDEX [IX_TB_HISTORYFIELD_HistoryId] ON [TB_HISTORYFIELD] ([HistoryId]);
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20240821154621_History', N'8.0.7');
+GO
+
+COMMIT;
+GO
+

@@ -1,4 +1,5 @@
-﻿using Domain.Commands.StockCommands;
+﻿using Domain.Commands.HistoryCommands;
+using Domain.Commands.StockCommands;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Services;
@@ -15,11 +16,12 @@ namespace Domain.Handlers
     {
         private IStockRepository _stockRepository;
         private IEmailService _emailService;
-
-        public StockHandler(IStockRepository stockRepository, IEmailService emailService )
+        private IHandler<CreateHistoryCommand> _historyHandle;
+        public StockHandler(IStockRepository stockRepository, IEmailService emailService, IHandler<CreateHistoryCommand> historyHandle)
         {
             _stockRepository = stockRepository;
             _emailService = emailService;
+            _historyHandle = historyHandle;
         }
 
         public IHandleResult Handle(EntryStockCommand command)
@@ -37,7 +39,7 @@ namespace Domain.Handlers
                 }
             }
 
-            stock.setEntry(command.Quantity, command.TotalValue);
+            _historyHandle.Handle(new CreateHistoryCommand(command, stock, null, Entitys.Enuns.EHistoryAction.Update));
 
             return new HandleResult(true, "Estoque atualizado com sucesso", stock);
         }
