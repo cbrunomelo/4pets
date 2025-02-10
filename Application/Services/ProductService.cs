@@ -26,7 +26,7 @@ public class ProductService : IProductService
         _productHandler = new ProductHandler(productRepository, historyHandler, categoryRepo);
         _mapper = AutoMapperConfiguration.Get();
     }
-    public IResultService CreateProduct(ProductDto product, int userId)
+    public IResultService<ProductDto> CreateProduct(ProductDto product, int userId)
     {
         var command = new CreateProductCommand(product.Name
                                                , product.Price
@@ -45,29 +45,29 @@ public class ProductService : IProductService
                 (result.Data as Product).CategoryId ?? 0
             );
 
-            return new ResultService(true, "Success", productDto);
+            return new ResultService<ProductDto>(true, "Success", productDto);
         }
-        return new ResultService(false, "Error", result.Errors);
+        return new ResultService<ProductDto>(false, "Error", result.Errors);
     }
 
-    public IResultService DeleteProduct(ProductDto product)
+    public IResultService<ProductDto> DeleteProduct(ProductDto product)
     {
         throw new NotImplementedException();
     }
 
-    public IResultService GetProduct(ProductDto product)
+    public IResultService<ProductDto> GetProduct(ProductDto product)
     {
         throw new NotImplementedException();
 
     }
 
-    public IResultService GetById(int id, int userId)
+    public IResultService<ProductDto> GetById(int id, int userId)
     {
         try
         {
             var product = _productQuery.GetById(id);
             if (product == null)
-                return new ResultService(false, "Product not found", "001x00");
+                return new ResultService<ProductDto>(false, "Product not found", "001x00");
 
             var productDto = new ProductDto
             (
@@ -78,15 +78,15 @@ public class ProductService : IProductService
                 product.CategoryId ?? 0
             );
 
-            return new ResultService(true, "Success", productDto);
+            return new ResultService<ProductDto>(true, "Success", productDto);
         }
         catch (Exception ex)
         {
-            return new ResultService(false, "Internal Error", "001x00");
+            return new ResultService<ProductDto>(false, "Internal Error", "001x00");
         }
     }
 
-    public IResultService UpdateProduct(ProductDto product, int usuarioId)
+    public IResultService<ProductDto> UpdateProduct(ProductDto product, int usuarioId)
      {
         try
         {
@@ -103,13 +103,13 @@ public class ProductService : IProductService
              (result.Data as Product).CategoryId ?? 0
                 );
 
-                return new ResultService(true, "Success", productDto);
+                return new ResultService<ProductDto>(true, "Success", productDto);
             }
-            return new ResultService(false, result.Message, result.Errors);
+            return new ResultService<ProductDto>(false, result.Message, result.Errors);
         }
         catch
         {
-            return new ResultService(false, "Internal Error", "001x00");
+            return new ResultService<ProductDto>(false, "Internal Error", "001x00");
         }
     }
 

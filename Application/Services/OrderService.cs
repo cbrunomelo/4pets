@@ -31,11 +31,11 @@ namespace Application.Services
 
         }
 
-        public IResultService Create(OrderDto orderDto)
+        public IResultService<OrderDto> Create(OrderDto orderDto)
         {
             var command = _mapper.Map<CreateOrderCommand>(orderDto);
             var result = _orderHandler.Handle(command);
-            return _mapper.Map<ResultService>(result);
+            return _mapper.Map<ResultService<OrderDto>>(result);
         }
 
 

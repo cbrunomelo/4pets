@@ -28,7 +28,7 @@ public class ProductController : ControllerBase
 
     // GET: api/<ProductController>
     [HttpGet]
-    public ActionResult<IResultService> Get()
+    public ActionResult<IResultService<IEnumerable<ProductDto>>> Get()
     {
         var productDto = new ProductDto
         (1,
@@ -36,17 +36,18 @@ public class ProductController : ControllerBase
         "Description",
         10.5m,
         1);
-        return Ok(new ResultService(true, "Success", productDto));
+        return Ok(new ResultService<ProductDto>(true, "Success", productDto));
     }
 
     // GET api/<ProductController>/5
     [HttpGet("{id}")]
-    public ActionResult<IResultService> Get(
-        [FromRoute] int id,
-        [FromHeader] string token)
+    public ActionResult<IResultService<ProductDto>> Get(
+        [FromRoute] int id
+        )
     {
         try
         {
+            string token = "";
             int userId = token.GetUserId();
             var result = _productService.GetById(id, userId);
             if (result.Sucess)
@@ -55,13 +56,13 @@ public class ProductController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new ResultService(false, "Falha Interna", "001x00"));
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResultService<ProductDto>(false, "Falha Interna", "001x00"));
         }
     }
 
     // POST api/<ProductController>
     [HttpPost]
-    public ActionResult<IResultService> Post([FromBody] ProductDto newProduct)
+    public ActionResult<IResultService<ProductDto>> Post([FromBody] ProductDto newProduct)
     {
         try
         {
@@ -74,7 +75,7 @@ public class ProductController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new ResultService(false, "Falha Interna", "001x00"));
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResultService<ProductDto>(false, "Falha Interna", "001x00"));
         }
 
     }
@@ -94,7 +95,7 @@ public class ProductController : ControllerBase
         }
         catch (Exception ex)
         {
-            StatusCode(500, new ResultService(false, "Falha Interna", "001x00"));
+            StatusCode(StatusCodes.Status500InternalServerError, new ResultService<ProductDto>(false, "Falha Interna", "001x00"));
 
         }
     }
