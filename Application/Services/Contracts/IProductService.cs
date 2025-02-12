@@ -4,10 +4,10 @@ using Application.Messaging;
 namespace Application.Services.Contracts;
 internal interface IProductService
 {
-    IResultService GetProduct(ProductDto product);
-    IResultService CreateProduct(ProductDto product, int userId);
-    IResultService UpdateProduct(ProductDto product, int userId);
-    IResultService DeleteProduct(ProductDto product);
-    IResultService GetById(int id, int userId);
+    IResultService<IEnumerable<ProductDto>> GetAll(PaginacaoDto pag);
+    IResultService<ProductDto> Create(ProductDto product, int userId);
+    IResultService<ProductDto> Update(ProductDto product, int userId);
+    IResultService<bool> Delete(int Id, int userID);
+    IResultService<ProductDto> GetById(int id, int userId);
 }
 

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Application.Messaging
 {
-    public interface IResultService
+    public interface IResultService<T> 
     {
-        IDto Data { get; }
+        T Data { get; }
         bool Sucess { get; }
         string Message { get; }
         List<string> Errors { get; }

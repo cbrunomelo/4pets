@@ -1,6 +1,7 @@
 ﻿using Domain.Entitys;
 using Domain.Queries;
 using Domain.Repository;
+using Infra.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,18 @@ namespace Infra.Repositorys
             }
         }
 
+        public void Delete(Product product)
+        {
+            try
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
         public Product GetById(int id)
         {
             try
@@ -46,9 +59,25 @@ namespace Infra.Repositorys
             }
         }
 
-        public Product GetProduct(Product product)
+        public IEnumerable<Product> GetProducts(int page, int pageSize)
         {
-            throw new NotImplementedException();
+            IEnumerable<Product> products = new List<Product>();
+
+            try
+            {
+                products = _context.Products
+                    .Include(x => x.Category)
+                    .Include(x => x.Stock)
+                    .AsQueryable()
+                    .Paginate(page, pageSize)
+                    .ToList();
+
+                return products;
+            }
+            catch (Exception ex)
+            {
+                return products;
+            }
         }
 
         public List<Product> GetUnavailables(List<Product> products)
