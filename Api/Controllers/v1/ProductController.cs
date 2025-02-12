@@ -7,6 +7,8 @@ using Domain.Handlers.Contracts;
 using Domain.Queries;
 using Domain.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Linq.Expressions;
 
 namespace Api.Controllers.v1;
 
@@ -28,15 +30,25 @@ public class ProductController : ControllerBase
 
     // GET: api/<ProductController>
     [HttpGet]
-    public ActionResult<IResultService<IEnumerable<ProductDto>>> Get()
+    public ActionResult<IResultService<IEnumerable<ProductDto>>> Get(
+        int page = 1,
+        int pageSize = 10
+        )
     {
-        var productDto = new ProductDto
-        (1,
-        "Product 1",
-        "Description",
-        10.5m,
-        1);
-        return Ok(new ResultService<ProductDto>(true, "Success", productDto));
+        try
+        {
+            var pag = new PaginacaoDto(page, pageSize);
+            string token = "";
+            int userId = token.GetUserId();
+            var result = _productService.GetAll(pag);
+            if (result.Sucess)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResultService<IEnumerable<ProductDto>>(false, "Falha Interna", "001x00"));
+        }
     }
 
     // GET api/<ProductController>/5
@@ -68,7 +80,7 @@ public class ProductController : ControllerBase
         {
             // usuario vem do token, depois eu implemento
             var usuarioId = 2;
-            var result = _productService.CreateProduct(newProduct, usuarioId);
+            var result = _productService.Create(newProduct, usuarioId);
             if (result.Sucess)
                 return Created($"/api/product/{(result.Data as ProductDto)?.Id}", result);
             return BadRequest(result);
@@ -82,21 +94,21 @@ public class ProductController : ControllerBase
 
     // PUT api/<ProductController>/5
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] ProductDto product)
+    public ActionResult<IResultService<ProductDto>> Put(int id, [FromBody] ProductDto product)
     {
         try
         {
             // usuario vem do token, depois eu implemento
             var usuarioId = 2;
-            var result = _productService.UpdateProduct(product, usuarioId);
+            var result = _productService.Update(product, usuarioId);
             if (result.Sucess)
-                Ok(result);
-            BadRequest(result);
+                return Ok(result);
+
+            return BadRequest(result);
         }
         catch (Exception ex)
         {
-            StatusCode(StatusCodes.Status500InternalServerError, new ResultService<ProductDto>(false, "Falha Interna", "001x00"));
-
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResultService<ProductDto>(false, "Falha Interna", "001x00"));
         }
     }
 
@@ -104,6 +116,23 @@ public class ProductController : ControllerBase
     [HttpDelete("{id}")]
     public void Delete(int id)
     {
+        try
+        {
+            // usuario vem do token, depois eu implemento
+            var usuarioId = 2;
+            var result = _productService.Delete(id, usuarioId);
+            if (result.Sucess)
+                StatusCode(StatusCodes.Status204NoContent);
+            else
+                StatusCode(StatusCodes.Status400BadRequest);
+
+        }
+        catch (Exception ex)
+        {
+            StatusCode(StatusCodes.Status500InternalServerError);
+        }       
+        
+
     }
 }
 

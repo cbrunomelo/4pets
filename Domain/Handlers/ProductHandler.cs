@@ -1,5 +1,6 @@
 ﻿using Domain.Commands;
 using Domain.Commands.HistoryCommands;
+using Domain.Commands.ProductCommands;
 using Domain.Entitys;
 using Domain.Entitys.Enuns;
 using Domain.Handlers.Contracts;
@@ -18,9 +19,9 @@ namespace Domain.Handlers
         private readonly IProductRepository _repository;
         private readonly IHandler<CreateHistoryCommand> _historyHandle;
         private readonly ICategoryRepository _categoryRepository;
-        public ProductHandler(IProductRepository repository, 
+        public ProductHandler(IProductRepository repository,
                              IHandler<CreateHistoryCommand> historyHandle
-                             ,ICategoryRepository categoryRepo)
+                             , ICategoryRepository categoryRepo)
         {
             _repository = repository;
             _historyHandle = historyHandle;
@@ -78,5 +79,16 @@ namespace Domain.Handlers
             return new HandleResult(true, "Produto atualizado com sucesso", productNew);
         }
 
+
+        public IHandleResult Handle(DeleteProductCommand command)
+        {
+            Product product = _repository.GetById(command.Id);
+            if (product == null)
+                return new HandleResult("Não foi possivel deletar o produto", "Produto não encontrado");
+            _repository.Delete(product);
+            _historyHandle.Handle(new CreateHistoryCommand(command, product, null, EHistoryAction.Delete));
+            return new HandleResult(true, "Produto deletado com sucesso", product);
+
+        }
     }
 }

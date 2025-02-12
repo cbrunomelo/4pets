@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public record ProductDto(int Id, string Name, string Description, decimal Price, int CategoryId) : IDto;
-
+    public record PaginacaoDto (int Page, int PageSize, int Total = 0, int TotalPages = 0) : IDto;
+  
 }

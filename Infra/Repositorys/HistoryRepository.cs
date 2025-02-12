@@ -40,7 +40,10 @@ namespace Infra.Repositorys
                 _entity = entity;
 
                 var predicate = _fields[entity.GetType()];
-                return _context.Histories.FirstOrDefault(predicate).Id;
+                var history = _context.Histories.FirstOrDefault(predicate);
+                if (history != null)
+                    return history.Id;
+                return 0;
             }
             catch (Exception ex)
             {
