@@ -2,6 +2,6 @@
 {
     public interface IHandler<T>
     {
-        IHandleResult Handle(T command);
+        Task<IHandleResult> Handle(T command);
     }
 }

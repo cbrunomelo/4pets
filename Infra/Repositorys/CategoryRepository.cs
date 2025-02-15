@@ -1,4 +1,5 @@
 ﻿using Domain.Entitys;
+using Domain.Queries.CategoryQuerys;
 using Domain.Repository;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,18 @@ namespace Infra.Repositorys
 
         }
 
+        public Task<bool> Handle(VerifyCategoryExist request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Task.FromResult(_context.Categories.Any(c => c.Id == request.Id));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(false);
+            }
+        }
+
         public bool Update(Category category)
         {
             try
@@ -67,18 +80,6 @@ namespace Infra.Repositorys
                 oldCtr.Update(category);
                 _context.SaveChanges();
                 return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public bool VerifyCategoryExist(int? categoryId)
-        {
-            try
-            {
-                return _context.Categories.Any(c => c.Id == categoryId);
             }
             catch (Exception ex)
             {

@@ -6,6 +6,7 @@ using Domain.Commands.HistoryCommands;
 using Domain.Handlers.Contracts;
 using Domain.Queries;
 using Domain.Repository;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Linq.Expressions;
@@ -18,14 +19,12 @@ public class ProductController : ControllerBase
 {
     private readonly ProductService _productService;
     public ProductController(IProductRepository productRepository
-                            , IHandler<CreateHistoryCommand> historyHandler
-                            , ICategoryRepository categoryRepo
-                            , IProductQuery productQuery)
+                            ,IMediator mediator
+                            ,IProductQuery productQuery)
     {
         _productService = new ProductService(productRepository
-                                             , historyHandler
-                                             , categoryRepo
-                                             , productQuery);
+                                             ,mediator
+                                             ,productQuery);
     }
 
     // GET: api/<ProductController>
@@ -74,13 +73,13 @@ public class ProductController : ControllerBase
 
     // POST api/<ProductController>
     [HttpPost]
-    public ActionResult<IResultService<ProductDto>> Post([FromBody] ProductDto newProduct)
+    public async Task<ActionResult<IResultService<ProductDto>>> Post([FromBody] ProductDto newProduct)
     {
         try
         {
             // usuario vem do token, depois eu implemento
             var usuarioId = 2;
-            var result = _productService.Create(newProduct, usuarioId);
+            var result =await _productService.Create(newProduct, usuarioId);
             if (result.Sucess)
                 return Created($"/api/product/{(result.Data as ProductDto)?.Id}", result);
             return BadRequest(result);
@@ -94,13 +93,13 @@ public class ProductController : ControllerBase
 
     // PUT api/<ProductController>/5
     [HttpPut("{id}")]
-    public ActionResult<IResultService<ProductDto>> Put(int id, [FromBody] ProductDto product)
+    public async Task<ActionResult<IResultService<ProductDto>>> Put(int id, [FromBody] ProductDto product)
     {
         try
         {
             // usuario vem do token, depois eu implemento
             var usuarioId = 2;
-            var result = _productService.Update(product, usuarioId);
+            var result =await _productService.Update(product, usuarioId);
             if (result.Sucess)
                 return Ok(result);
 
