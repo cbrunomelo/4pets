@@ -4,8 +4,10 @@ using Domain.Commands.ProductCommands;
 using Domain.Entitys;
 using Domain.Entitys.Enuns;
 using Domain.Handlers.Contracts;
+using Domain.Queries.CategoryQuerys;
 using Domain.Repository;
 using Domain.Validation;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,18 +19,15 @@ namespace Domain.Handlers
     public class ProductHandler : IHandler<CreateProductCommand>
     {
         private readonly IProductRepository _repository;
-        private readonly IHandler<CreateHistoryCommand> _historyHandle;
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IMediator _mediator;
         public ProductHandler(IProductRepository repository,
-                             IHandler<CreateHistoryCommand> historyHandle
-                             , ICategoryRepository categoryRepo)
+                              IMediator mediator)
         {
             _repository = repository;
-            _historyHandle = historyHandle;
-            _categoryRepository = categoryRepo;
+            _mediator = mediator;
         }
 
-        public IHandleResult Handle(CreateProductCommand command)
+        public async Task<IHandleResult> Handle(CreateProductCommand command)
         {
             Product product = new Product(command.Name, command.Price, command.Description, command.CategoryId);
 
@@ -40,7 +39,8 @@ namespace Domain.Handlers
             if (_repository.VerifyProductExist(product.Name))
                 return new HandleResult("Não foi possivel criar o produto", "Nome do produto já cadastrado");
 
-            if (!_categoryRepository.VerifyCategoryExist(product.CategoryId))
+            var categoriaExiste = await _mediator.Send(new VerifyCategoryExist(product.CategoryId ?? 0));
+            if (!categoriaExiste)
                 return new HandleResult("Não foi possivel criar o produto", "Categoria não encontrada");
 
             int id = _repository.Create(product);
@@ -50,11 +50,12 @@ namespace Domain.Handlers
 
             product.SetId(id);
 
-            _historyHandle.Handle(new CreateHistoryCommand(command, product, null, EHistoryAction.Insert));
+            await _mediator.Send(new CreateHistoryCommand(command, product, null, EHistoryAction.Insert));
+
             return new HandleResult(true, "Produto criado com sucesso", product);
         }
 
-        public IHandleResult Handle(UpdateProductCommand command)
+        public async Task<IHandleResult> Handle(UpdateProductCommand command)
         {
             Product productNew = _repository.GetById(command.Id);
 
@@ -70,12 +71,13 @@ namespace Domain.Handlers
             if (!produtcValidate.IsValid)
                 return new HandleResult("Por favor corrija os campos abaixo", produtcValidate.Errors.Select(x => x.ErrorMessage).ToList());
 
-            if (!_categoryRepository.VerifyCategoryExist(productNew.CategoryId))
+            var categoriaExiste = await _mediator.Send(new VerifyCategoryExist(productNew.CategoryId ?? 0));
+            if (!categoriaExiste)
                 return new HandleResult("Não foi possivel atualizar o produto", "Categoria não encontrada");
 
             _repository.Update(productNew);
 
-            _historyHandle.Handle(new CreateHistoryCommand(command, productNew, productOld, EHistoryAction.Update));
+            await _mediator.Send(new CreateHistoryCommand(command, productNew, productOld, EHistoryAction.Update));
             return new HandleResult(true, "Produto atualizado com sucesso", productNew);
         }
 
@@ -86,7 +88,7 @@ namespace Domain.Handlers
             if (product == null)
                 return new HandleResult("Não foi possivel deletar o produto", "Produto não encontrado");
             _repository.Delete(product);
-            _historyHandle.Handle(new CreateHistoryCommand(command, product, null, EHistoryAction.Delete));
+            _mediator.Send(new CreateHistoryCommand(command, product, null, EHistoryAction.Delete));
             return new HandleResult(true, "Produto deletado com sucesso", product);
 
         }

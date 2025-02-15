@@ -24,7 +24,7 @@ namespace Domain.Handlers
             _repo = repo;
             _historyHandle = historyHandle;
         }
-        public IHandleResult Handle(CreateCategoryCommand command)
+        public async Task<IHandleResult> Handle(CreateCategoryCommand command)
         {
             var category = new Category(command.Name, command.Description);
             var validationResult = new CategoryValidation().Validate(category);
@@ -46,7 +46,7 @@ namespace Domain.Handlers
             return new HandleResult(true, "Categoria criada com sucesso", category);
         }
 
-        public IHandleResult Handle(EditCategoryCommand command)
+        public async Task<IHandleResult> Handle(EditCategoryCommand command)
         {
             var category = new Category(command.Name, command.Description);
             category.SetId(command.Id);
@@ -68,7 +68,7 @@ namespace Domain.Handlers
         }
 
 
-        public IHandleResult Handle(DeleteCategoryCommand command)
+        public async Task<IHandleResult> Handle(DeleteCategoryCommand command)
         {
             var category = _repo.GetById(command.Id);
             if (category == null)

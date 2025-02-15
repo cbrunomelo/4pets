@@ -4,12 +4,14 @@ using Domain.Commands.HistoryCommands;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
 using Domain.Queries;
+using Domain.Queries.CategoryQuerys;
 using Domain.Repository;
 using Infra.Repositorys;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +32,10 @@ namespace Application
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductQuery, ProductRepository>();
+            services.AddMediatR((cfg) => {
+                            cfg.RegisterServicesFromAssembly(Assembly.Load("Domain"));
+                            cfg.RegisterServicesFromAssembly(Assembly.Load("Infra"));
+                            });
             return services;
         }
     }

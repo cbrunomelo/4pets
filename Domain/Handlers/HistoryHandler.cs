@@ -5,6 +5,7 @@ using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
 using FluentValidation;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Handlers
 {
-    public class HistoryHandler : IHandler<CreateHistoryCommand>
+    public class HistoryHandler : IRequestHandler<CreateHistoryCommand, IHandleResult>, IHandler<CreateHistoryCommand>
     {
         private readonly IHistoryRepository _repo;
         private readonly IHistoryFieldRepository _repoField;
@@ -24,14 +25,14 @@ namespace Domain.Handlers
             _repo = repo;
             _repoField = repoField;
         }
-        public IHandleResult Handle(CreateHistoryCommand command)
+        public async Task<IHandleResult> Handle(CreateHistoryCommand request, CancellationToken cancellationToken)
         {
-            var history = new History(command.CurrentEntity, command.command.UserId);
+            var history = new History(request.CurrentEntity, request.command.UserId);
             var validationResult = new HistoryValidation().Validate(history);
             if (!validationResult.IsValid)
                 return new HandleResult("Histórico inválido!", validationResult.Errors.Select(x => x.ErrorMessage).ToList());
 
-            int historyID = _repo.GetHistoryId(command.CurrentEntity);
+            int historyID = _repo.GetHistoryId(request.CurrentEntity);
             if (historyID == 0)
             {
                 historyID = _repo.Create(history);
@@ -40,13 +41,13 @@ namespace Domain.Handlers
             if (historyID == 0)
                 return new HandleResult("Não foi possivel criar histórico.", "Erro interno 00x001");
 
-            foreach (var field in command.CurrentEntity.GetType().GetProperties())
+            foreach (var field in request.CurrentEntity.GetType().GetProperties())
             {
-                var currentValue = field.GetValue(command.CurrentEntity)?.ToString();
-                var oldValue = command.OldEntity?.GetType().GetProperty(field.Name)?.GetValue(command.OldEntity)?.ToString();
+                var currentValue = field.GetValue(request.CurrentEntity)?.ToString();
+                var oldValue = request.OldEntity?.GetType().GetProperty(field.Name)?.GetValue(request.OldEntity)?.ToString();
                 if (currentValue != oldValue)
                 {
-                    var historyField = new HistoryField(historyID, command.command.UserId, command.Action, field.Name, currentValue, oldValue);
+                    var historyField = new HistoryField(historyID, request.command.UserId, request.Action, field.Name, currentValue, oldValue);
                     var fieldId = _repoField.Create(historyField);
                     if (fieldId == 0)
                         return new HandleResult("Não foi possivel criar histórico.", "Erro interno 00x002");
@@ -62,5 +63,8 @@ namespace Domain.Handlers
             return new HandleResult(true, "Histórico criado com sucesso", history);
 
         }
+
+        public Task<IHandleResult> Handle(CreateHistoryCommand command) => Handle(command, new System.Threading.CancellationToken());
+        
     }
 }

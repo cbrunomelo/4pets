@@ -30,7 +30,7 @@ namespace Domain.Handlers
             this._historyHandle = _historyHandle;
             _stockRepository = stockRepository;
         }
-        public IHandleResult Handle(CreateOrderCommand command)
+        public async Task<IHandleResult> Handle(CreateOrderCommand command)
         {
             Order order = new Order(command.Itens, command.ClientId);
             var validate = new OrderValidation().Validate(order);

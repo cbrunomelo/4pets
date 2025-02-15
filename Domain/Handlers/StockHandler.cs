@@ -24,7 +24,7 @@ namespace Domain.Handlers
             _historyHandle = historyHandle;
         }
 
-        public IHandleResult Handle(EntryStockCommand command)
+        public async Task<IHandleResult> Handle(EntryStockCommand command)
         {
             var stock = _stockRepository.Get(command.StockId);
 
@@ -44,7 +44,7 @@ namespace Domain.Handlers
             return new HandleResult(true, "Estoque atualizado com sucesso", stock);
         }
 
-        public IHandleResult Handle(CreateStockCommand command)
+        public async Task<IHandleResult> Handle(CreateStockCommand command)
         {
             throw new NotImplementedException();
         }

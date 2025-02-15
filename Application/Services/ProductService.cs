@@ -11,6 +11,7 @@ using Domain.Handlers;
 using Domain.Handlers.Contracts;
 using Domain.Queries;
 using Domain.Repository;
+using MediatR;
 
 namespace Application.Services;
 
@@ -19,21 +20,21 @@ public class ProductService : IProductService
     private readonly ProductHandler _productHandler;
     private readonly IProductQuery _productQuery;
     private IMapper _mapper;
+    private readonly IMediator _mediator;
     public ProductService(IProductRepository productRepository
-                         , IHandler<CreateHistoryCommand> historyHandler
-                         , ICategoryRepository categoryRepo
+                        , IMediator mediator
                          , IProductQuery productQuery)
     {
         _productQuery = productQuery;
-        _productHandler = new ProductHandler(productRepository, historyHandler, categoryRepo);
+        _productHandler = new ProductHandler(productRepository, mediator);
         _mapper = AutoMapperConfiguration.Get();
     }
-    public IResultService<ProductDto> Create(ProductDto product, int userId)
+    public async Task<IResultService<ProductDto>> Create(ProductDto product, int userId)
     {
 
         var command = _mapper.Map<CreateProductCommand>(product, opt => opt.Items["UserId"] = userId);
 
-        var result = _productHandler.Handle(command);
+        var result = await _productHandler.Handle(command);
         if (result.Sucess)
         {
             var productDto = _mapper.Map<ProductDto>((Product)result.Data);
@@ -99,12 +100,12 @@ public class ProductService : IProductService
         }
     }
 
-    public IResultService<ProductDto> Update(ProductDto product, int usuarioId)
+    public async Task<IResultService<ProductDto>> Update(ProductDto product, int usuarioId)
      {
         try
         {
             var command = _mapper.Map<UpdateProductCommand>(product, opt => opt.Items["UserId"] = usuarioId);
-            var result = _productHandler.Handle(command);
+            var result =await _productHandler.Handle(command);
             if (result.Sucess)
             {
                 var rtnProductDto = _mapper.Map<ProductDto>((Product)result.Data);
