@@ -33,9 +33,12 @@ namespace Application
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductQuery, ProductRepository>();
             services.AddMediatR((cfg) => {
-                            cfg.RegisterServicesFromAssembly(Assembly.Load("Domain"));
-                            cfg.RegisterServicesFromAssembly(Assembly.Load("Infra"));
-                            });
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var assembly in assemblies)
+                {
+                    cfg.RegisterServicesFromAssemblies(assembly);
+                }
+            });
             return services;
         }
     }
