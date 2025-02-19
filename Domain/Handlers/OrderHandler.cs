@@ -2,14 +2,11 @@
 using Domain.Commands.OrderCommands;
 using Domain.Entitys;
 using Domain.Entitys.Enuns;
+using Domain.Events;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MediatR;
 
 namespace Domain.Handlers
 {
@@ -17,20 +14,17 @@ namespace Domain.Handlers
     {
         private readonly IOrderRepository _repo;
         private readonly IOrderItemRepository _orderItemRepository;
-        private readonly IStockRepository _stockRepository;
-        private readonly IHandler<CreateHistoryCommand> _historyHandle;
+        private readonly IMediator _mediator;
 
         public OrderHandler(IOrderRepository repository
             ,IOrderItemRepository orderItemRepository
-            ,IHandler<CreateHistoryCommand> _historyHandle
-            ,IStockRepository stockRepository) 
+            ,IMediator mediator) 
         {
             _repo = repository;
             _orderItemRepository = orderItemRepository;
-            this._historyHandle = _historyHandle;
-            _stockRepository = stockRepository;
+            _mediator = mediator;
         }
-        public async Task<IHandleResult> Handle(CreateOrderCommand command)
+        public async Task<IHandleResult> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
         {
             Order order = new Order(command.Itens, command.ClientId);
             var validate = new OrderValidation().Validate(order);
@@ -52,13 +46,10 @@ namespace Domain.Handlers
                 return new HandleResult("Não foi possível criar o pedido", "Erro interno");
 
             order.SetId(id);
+            
+            _mediator.Send(new CreateHistoryCommand(command, order, null, EHistoryAction.Insert));
 
-            foreach (var item in orderItens)
-            {
-                _stockRepository.DecreaseStock(item.Product.Id, item.Quantity);
-            }
-
-            _historyHandle.Handle(new CreateHistoryCommand(command, order, null, EHistoryAction.Insert));
+            _mediator.Publish(new OrderCreatedNotification<Order>(order));
 
             return new HandleResult(true, "Pedido criado com sucesso", order);
 

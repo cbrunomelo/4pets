@@ -40,5 +40,10 @@ namespace Infra.Repositorys
                 return null;
             }
         }
+
+        public void Update(Stock stock)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Commands.HistoryCommands;
 using Domain.Entitys;
 using Domain.Entitys.Enuns;
+using Domain.Events;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Handlers
 {
-    public class HistoryHandler : IRequestHandler<CreateHistoryCommand, IHandleResult>, IHandler<CreateHistoryCommand>
+    public class HistoryHandler : IHandler<CreateHistoryCommand>                                                          
     {
         private readonly IHistoryRepository _repo;
         private readonly IHistoryFieldRepository _repoField;
@@ -64,7 +65,5 @@ namespace Domain.Handlers
 
         }
 
-        public Task<IHandleResult> Handle(CreateHistoryCommand command) => Handle(command, new System.Threading.CancellationToken());
-        
     }
 }

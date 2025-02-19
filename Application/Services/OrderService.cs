@@ -7,6 +7,7 @@ using Domain.Commands.OrderCommands;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,18 +24,17 @@ namespace Application.Services
         private readonly IHandler<CreateOrderCommand> _orderHandler;
         public OrderService(IOrderRepository orderRepository, 
                            IOrderItemRepository orderItemRepository, 
-                           IHandler<CreateHistoryCommand> historyHandler,
-                           IStockRepository stockRepository)
+                           IMediator mediator)
         {
 
-            _orderHandler = new OrderHandler(orderRepository, orderItemRepository, historyHandler, stockRepository);
+            _orderHandler = new OrderHandler(orderRepository, orderItemRepository, mediator);
 
         }
 
-        public IResultService<OrderDto> Create(OrderDto orderDto)
+        public async Task<IResultService<OrderDto>> Create(OrderDto orderDto)
         {
             var command = _mapper.Map<CreateOrderCommand>(orderDto);
-            var result = _orderHandler.Handle(command);
+            var result = await _orderHandler.Handle(command, new CancellationToken());
             return _mapper.Map<ResultService<OrderDto>>(result);
         }
 

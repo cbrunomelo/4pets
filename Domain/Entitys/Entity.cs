@@ -8,5 +8,6 @@ namespace Domain.Entitys
         public EStatus Status { get; internal set; }
         public History History { get; set; }
         public int HistoryId { get; set; }
+        public abstract Entity Clone();
     }
 }

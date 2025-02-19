@@ -8,11 +8,6 @@ using Domain.Queries.CategoryQuerys;
 using Domain.Repository;
 using Domain.Validation;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Handlers
 {
@@ -27,7 +22,7 @@ namespace Domain.Handlers
             _mediator = mediator;
         }
 
-        public async Task<IHandleResult> Handle(CreateProductCommand command)
+        public async Task<IHandleResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
             Product product = new Product(command.Name, command.Price, command.Description, command.CategoryId);
 
@@ -55,14 +50,14 @@ namespace Domain.Handlers
             return new HandleResult(true, "Produto criado com sucesso", product);
         }
 
-        public async Task<IHandleResult> Handle(UpdateProductCommand command)
+        public async Task<IHandleResult> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
         {
             Product productNew = _repository.GetById(command.Id);
 
             if (productNew == null)
                 return new HandleResult("Não foi possivel atualizar o produto", "Produto não encontrado");
 
-            Product productOld = productNew.Copy();
+            Product productOld = (Product)productNew.Clone();
 
             productNew.Update(command.Name, command.Price, command.Description, command.CategoryId);
 
@@ -77,12 +72,13 @@ namespace Domain.Handlers
 
             _repository.Update(productNew);
 
-            await _mediator.Send(new CreateHistoryCommand(command, productNew, productOld, EHistoryAction.Update));
+            _mediator.Send(new CreateHistoryCommand(command, productNew, productOld, EHistoryAction.Update));
+
             return new HandleResult(true, "Produto atualizado com sucesso", productNew);
         }
 
 
-        public IHandleResult Handle(DeleteProductCommand command)
+        public IHandleResult Handle(DeleteProductCommand command, CancellationToken cancellationToken)
         {
             Product product = _repository.GetById(command.Id);
             if (product == null)

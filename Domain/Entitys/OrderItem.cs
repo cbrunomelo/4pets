@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entitys
 {
-    public class OrderItem
+    public class OrderItem : Entity
     {
         public int Id { get; private set; }
         public Product Product { get; set; }
@@ -38,6 +38,8 @@ namespace Domain.Entitys
 
         private void SetTotal() => Total = Quantity * (Product is null ? 1 : Product.Price);        
         internal void SetId(int id) => Id = id;
+
+        public override Entity Clone() => new OrderItem(Product, Quantity);    
         
     }
 }

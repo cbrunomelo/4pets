@@ -57,5 +57,14 @@ namespace Domain.Entitys
             TotalValue -= quantity * AvaragePrice;
         }
 
+        internal void Entry(decimal quantity, decimal totalValue)
+        {
+            Quantity += quantity;
+            TotalValue += totalValue;
+            AvaragePrice = TotalValue / Quantity;
+        }
+
+        public override Entity Clone() => new Stock(Name, Quantity, AvaragePrice, TotalValue, Product);
+        
     }
 }

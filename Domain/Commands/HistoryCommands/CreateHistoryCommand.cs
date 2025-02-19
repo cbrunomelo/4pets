@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Commands.HistoryCommands
 {
-    public record CreateHistoryCommand(ICommand command,Entity CurrentEntity,Entity OldEntity ,EHistoryAction Action) : ICommand, IRequest<IHandleResult>
+    public record CreateHistoryCommand(ICommand command, Entity CurrentEntity, Entity OldEntity, EHistoryAction Action) : ICommand, IRequest<IHandleResult> 
     {
-        public DateTime Date { get; init; } = DateTime.Now;
-        int ICommand.UserId { get; init; }
+    public DateTime Date { get; init; } = DateTime.Now;
+    int ICommand.UserId { get; init; }
     }
 }

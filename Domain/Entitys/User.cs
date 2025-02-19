@@ -10,5 +10,12 @@
             Name = name;
             Email = email;            
         }
+
+        public override Entity Clone()
+        {
+            var user = new User(Name, Email);
+            user.Id = Id;
+            return user;
+        }
     }
 }

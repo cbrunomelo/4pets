@@ -27,5 +27,7 @@ namespace Domain.Entitys
             Name = category.Name;
             Description = category.Description;
         }
+
+        public override Category Clone() => new Category(Name, Description);        
     }
 }

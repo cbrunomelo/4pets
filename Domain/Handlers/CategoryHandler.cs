@@ -19,7 +19,7 @@ namespace Domain.Handlers
             _repo = repo;
             _mediator = mediator;
         }
-        public async Task<IHandleResult> Handle(CreateCategoryCommand command)
+        public async Task<IHandleResult> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
         {
             var category = new Category(command.Name, command.Description);
             var validationResult = new CategoryValidation().Validate(category);
@@ -41,7 +41,7 @@ namespace Domain.Handlers
             return new HandleResult(true, "Categoria criada com sucesso", category);
         }
 
-        public async Task<IHandleResult> Handle(EditCategoryCommand command)
+        public async Task<IHandleResult> Handle(EditCategoryCommand command, CancellationToken cancellationToken)
         {
             var category = new Category(command.Name, command.Description);
             category.SetId(command.Id);
@@ -63,7 +63,7 @@ namespace Domain.Handlers
         }
 
 
-        public async Task<IHandleResult> Handle(DeleteCategoryCommand command)
+        public async Task<IHandleResult> Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
         {
             var category = _repo.GetById(command.Id);
             if (category == null)

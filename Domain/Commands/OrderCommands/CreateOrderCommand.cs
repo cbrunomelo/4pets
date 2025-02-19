@@ -1,5 +1,6 @@
 ﻿using Domain.Commands.Contracts;
 using Domain.Entitys;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
