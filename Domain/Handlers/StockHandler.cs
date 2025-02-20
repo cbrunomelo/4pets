@@ -3,6 +3,7 @@ using Domain.Commands.StockCommands;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Services;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,36 +16,32 @@ namespace Domain.Handlers
                                 IHandler<CreateStockCommand>
     {
         private IStockRepository _stockRepository;
-        private IEmailService _emailService;
-        private IHandler<CreateHistoryCommand> _historyHandle;
-        public StockHandler(IStockRepository stockRepository, IEmailService emailService, IHandler<CreateHistoryCommand> historyHandle)
+        private IMediator _mediator;
+        public StockHandler(IStockRepository stockRepository, IMediator mediator)
         {
             _stockRepository = stockRepository;
-            _emailService = emailService;
-            _historyHandle = historyHandle;
+            _mediator = mediator;
         }
 
-        public async Task<IHandleResult> Handle(EntryStockCommand command)
+        public async Task<IHandleResult> Handle(EntryStockCommand command, CancellationToken cancellationToken)
         {
             var stock = _stockRepository.Get(command.StockId);
+
+            var oldStock = stock.Clone() as Entitys.Stock;
 
             if (stock == null)
                 return new HandleResult("Estoque não encontrado", "Estoque não encontrado");
 
-            if (stock.Quantity == 0 && stock.ClientObservers.Count > 0 && command.Quantity > 0)
-            {
-                foreach (var client in stock.ClientObservers)
-                {
-                    _emailService.Send(client.Email, "Estoque disponível", $"O estoque {stock.Name} está disponível");
-                }
-            }
+            stock.Entry(command.Quantity, command.TotalValue);
 
-            _historyHandle.Handle(new CreateHistoryCommand(command, stock, null, Entitys.Enuns.EHistoryAction.Update));
+            _stockRepository.Update(stock);
+
+            await _mediator.Send(new CreateHistoryCommand(command, stock, oldStock, Entitys.Enuns.EHistoryAction.Update));
 
             return new HandleResult(true, "Estoque atualizado com sucesso", stock);
         }
 
-        public async Task<IHandleResult> Handle(CreateStockCommand command)
+        public async Task<IHandleResult> Handle(CreateStockCommand command, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

@@ -6,5 +6,6 @@ namespace Domain.Repository
     {
         void DecreaseStock(int productId, int quantity);
         Stock Get(int stockId);
+        void Update(Stock stock);
     }
 }

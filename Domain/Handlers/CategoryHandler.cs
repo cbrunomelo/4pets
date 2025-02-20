@@ -5,26 +5,21 @@ using Domain.Entitys.Enuns;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using MediatR;
 
 namespace Domain.Handlers
 {
     public class CategoryHandler : IHandler<CreateCategoryCommand>, IHandler<EditCategoryCommand>, IHandler<DeleteCategoryCommand>
     {
         private readonly ICategoryRepository _repo;
-        private readonly IHandler<CreateHistoryCommand> _historyHandle;
+        private readonly IMediator _mediator;
 
-        public CategoryHandler(ICategoryRepository repo, IHandler<CreateHistoryCommand> historyHandle)
+        public CategoryHandler(ICategoryRepository repo, IMediator mediator)
         {
             _repo = repo;
-            _historyHandle = historyHandle;
+            _mediator = mediator;
         }
-        public async Task<IHandleResult> Handle(CreateCategoryCommand command)
+        public async Task<IHandleResult> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
         {
             var category = new Category(command.Name, command.Description);
             var validationResult = new CategoryValidation().Validate(category);
@@ -42,11 +37,11 @@ namespace Domain.Handlers
 
             category.SetId(id);
 
-            _historyHandle.Handle(new CreateHistoryCommand(command, category, null,EHistoryAction.Insert));
+            _mediator.Send(new CreateHistoryCommand(command, category, null, EHistoryAction.Insert));
             return new HandleResult(true, "Categoria criada com sucesso", category);
         }
 
-        public async Task<IHandleResult> Handle(EditCategoryCommand command)
+        public async Task<IHandleResult> Handle(EditCategoryCommand command, CancellationToken cancellationToken)
         {
             var category = new Category(command.Name, command.Description);
             category.SetId(command.Id);
@@ -63,12 +58,12 @@ namespace Domain.Handlers
             if (sucess)
                 return new HandleResult("Não foi possivel editar categoria.", "Erro interno");
 
-            _historyHandle.Handle(new CreateHistoryCommand(command, category, OldCategory,EHistoryAction.Update));
+            _mediator.Send(new CreateHistoryCommand(command, category, OldCategory, EHistoryAction.Update));
             return new HandleResult(true, "Categoria editada com sucesso", category);
         }
 
 
-        public async Task<IHandleResult> Handle(DeleteCategoryCommand command)
+        public async Task<IHandleResult> Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
         {
             var category = _repo.GetById(command.Id);
             if (category == null)
@@ -82,7 +77,7 @@ namespace Domain.Handlers
             if (!sucess)
                 return new HandleResult("Não foi possivel deletar categoria.", "Erro interno");
 
-            _historyHandle.Handle(new CreateHistoryCommand(command, category, oldCategory, EHistoryAction.Update));
+            _mediator.Send(new CreateHistoryCommand(command, category, oldCategory, EHistoryAction.Delete));
             return new HandleResult(true, "Categoria deletada com sucesso", category);
 
         }

@@ -4,6 +4,7 @@ using Domain.Entitys;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
+using MediatR;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -17,25 +18,25 @@ namespace Test.Domain.Handlers
     public class CategoryHandlerTest
     {
         private readonly Mock<ICategoryRepository> mockCategoryRepository = new Mock<ICategoryRepository>();
-        private readonly Mock<IHandler<CreateHistoryCommand>> _historyHandle;
+        private readonly Mock<IMediator> _mediator;
 
         public CategoryHandlerTest()
         {
             mockCategoryRepository.Setup(x => x.CreateCategory(It.IsAny<Category>())).Returns(1);
             mockCategoryRepository.Setup(x => x.CategoryExists(It.IsAny<string>())).Returns(false);
-            _historyHandle = new Mock<IHandler<CreateHistoryCommand>>();
+            _mediator = new Mock<IMediator>();
         }
 
         [Theory]
         [MemberData(nameof(ValidCategoryData.GetData), MemberType = typeof(ValidCategoryData))]
-        public void CreateCategory_WithValidData_ShouldCreateCategory(CreateCategoryCommand command)
+        public async void CreateCategory_WithValidData_ShouldCreateCategory(CreateCategoryCommand command)
         {
             // Arrange
 
-            CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _historyHandle.Object);
+            CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _mediator.Object);
 
             // Act
-            var result = handler.Handle(command);
+            var result = await handler.Handle(command);
 
             // Assert
             Assert.True(result.Sucess);
@@ -44,14 +45,14 @@ namespace Test.Domain.Handlers
 
         [Theory]
         [MemberData(nameof(InvalidCategoryData.GetData), MemberType = typeof(InvalidCategoryData))]
-        public void CreateCategory_WithInvalidData_ShouldNotCreateCategory(CreateCategoryCommand command)
+        public async void CreateCategory_WithInvalidData_ShouldNotCreateCategory(CreateCategoryCommand command)
         {
             // Arrange
 
-            CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _historyHandle.Object);
+            CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _mediator.Object);
 
             // Act
-            var result = handler.Handle(command);
+            var result = await handler.Handle(command);
 
             // Assert
             Assert.False(result.Sucess);
@@ -63,15 +64,15 @@ namespace Test.Domain.Handlers
 
         [Theory]
         [MemberData(nameof(ValidCategoryData.GetData), MemberType = typeof(ValidCategoryData))]
-        public void CreateCategory_alreadyExists_ShouldNotCreateCategory(CreateCategoryCommand command)
+        public async void CreateCategory_alreadyExists_ShouldNotCreateCategory(CreateCategoryCommand command)
         {
             // Arrange
             mockCategoryRepository.Setup(x => x.CategoryExists(It.IsAny<string>())).Returns(true);
 
-            CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _historyHandle.Object);
+            CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _mediator.Object);
 
             // Act
-            var result = handler.Handle(command);
+            var result = await handler.Handle(command);
 
             // Assert
             Assert.False(result.Sucess);
@@ -82,15 +83,15 @@ namespace Test.Domain.Handlers
 
         [Theory]
         [MemberData(nameof(ValidCategoryData.GetData), MemberType = typeof(ValidCategoryData))]
-        public void CreateCategory_InternalError_ShouldNotCreateCategory(CreateCategoryCommand command)
+        public async void CreateCategory_InternalError_ShouldNotCreateCategory(CreateCategoryCommand command)
         {
             // Arrange
             mockCategoryRepository.Setup(x => x.CreateCategory(It.IsAny<Category>())).Returns(0);
 
-            CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _historyHandle.Object);
+            CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _mediator.Object);
 
             // Act
-            var result = handler.Handle(command);
+            var result = await handler.Handle(command);
 
             // Assert
             Assert.False(result.Sucess);

@@ -4,6 +4,7 @@ using Domain.Entitys;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
+using MediatR;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace Test.Domain.Handlers
         private readonly Mock<IHandler<CreateHistoryCommand>> _historyHandle;
         private readonly Mock<IOrderItemRepository> _orderItemRepoMock;
         private readonly Mock<IStockRepository> _stockRepository;
+        private readonly Mock<IMediator> _mediator;
         public OrderHandlerTest() 
         {
             _OrderRepositoryMock = new Mock<IOrderRepository>();
@@ -28,21 +30,23 @@ namespace Test.Domain.Handlers
             _historyHandle = new Mock<IHandler<CreateHistoryCommand>>();
             _orderItemRepoMock = new Mock<IOrderItemRepository>();
             _stockRepository = new Mock<IStockRepository>();
+            _mediator = new Mock<IMediator>();
         }
 
 
         [Theory]
         [MemberData(nameof(ValidOrderData.GetData), MemberType = typeof(ValidOrderData))]
-        public void CreateOrderCommand_WithValidOrder_ShouldReturnOrder(List<OrderItem> orderItens, int clientId, int userId)
+        public async void CreateOrderCommand_WithValidOrder_ShouldReturnOrder(List<OrderItem> orderItens, int clientId, int userId)
         {
             //arrange
             var command = new CreateOrderCommand(orderItens, clientId, userId);
             _OrderRepositoryMock.Setup(x => x.Create(It.IsAny<Order>())).Returns(1);
             _orderItemRepoMock.Setup(x => x.LoadProductsWithStock(It.IsAny<List<OrderItem>>())).Returns(orderItens);            
-            var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _historyHandle.Object, _stockRepository.Object);
+            
+            var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _mediator.Object);
 
             //Act
-            var result = (HandleResult)handler.Handle(command);
+            var result = await handler.Handle(command);
 
             //Assert
             Assert.True(result.Sucess);
@@ -55,16 +59,16 @@ namespace Test.Domain.Handlers
 
         [Theory]
         [MemberData(nameof(InvalidOrderData.Data), MemberType = typeof(InvalidOrderData))]
-        public void CreateOrderCommand_WithInvalidData_ShouldNotCreateOrder(List<OrderItem> orderItens, int clientId, int userId)
+        public async void CreateOrderCommand_WithInvalidData_ShouldNotCreateOrder(List<OrderItem> orderItens, int clientId, int userId)
         {
             //Arrange
             var command = new CreateOrderCommand(orderItens, clientId, userId);
             _OrderRepositoryMock.Setup(x => x.Create(It.IsAny<Order>())).Returns(1);
             _ProductRepositoryMock.Setup(x => x.GetUnavailables(It.IsAny<List<Product>>())).Returns(new List<Product>());
-            var handler = new OrderHandler(_OrderRepositoryMock.Object,  _orderItemRepoMock.Object, _historyHandle.Object, _stockRepository.Object);
+            var handler = new OrderHandler(_OrderRepositoryMock.Object,  _orderItemRepoMock.Object, _mediator.Object);
 
             //Act
-            var result = (HandleResult)handler.Handle(command);
+            var result = await handler.Handle(command);
 
             //Assert
             Assert.False(result.Sucess);
@@ -76,16 +80,16 @@ namespace Test.Domain.Handlers
 
         [Theory]
         [MemberData(nameof(ValidOrderWithoutStockData.GetData), MemberType = typeof(ValidOrderWithoutStockData))]
-        public void CreateOrderCommand_WithUnavailableProductInStock_ShouldNotCreateOrder(List<OrderItem> orderItems, int clientId, int userId)
+        public async void CreateOrderCommand_WithUnavailableProductInStock_ShouldNotCreateOrder(List<OrderItem> orderItems, int clientId, int userId)
         {
             //Arrange
             var command = new CreateOrderCommand(orderItems, clientId, userId);
             _OrderRepositoryMock.Setup(x => x.Create(It.IsAny<Order>())).Returns(1);
             _orderItemRepoMock.Setup(x => x.LoadProductsWithStock(It.IsAny<List<OrderItem>>())).Returns(orderItems);
-            var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _historyHandle.Object, _stockRepository.Object);
+            var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _mediator.Object);
 
             //Act
-            var result = (HandleResult)handler.Handle(command);
+            var result = await handler.Handle(command);
 
 
             //Assert

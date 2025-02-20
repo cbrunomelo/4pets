@@ -10,6 +10,6 @@ namespace Application.Services.Contracts
 {
     public interface IOrderService
     {
-        IResultService<OrderDto> Create(OrderDto orderDto);
+        Task<IResultService<OrderDto>> Create(OrderDto orderDto);
     }
 }

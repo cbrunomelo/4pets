@@ -47,7 +47,7 @@ namespace Domain.Entitys
         }
 
 
-        internal Product Copy()
+        public override Entity Clone()
         {
             var product = new Product();
             product.Name = Name;
@@ -58,6 +58,5 @@ namespace Domain.Entitys
             return product;
 
         }
-
     }
 }

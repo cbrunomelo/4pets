@@ -24,7 +24,6 @@ namespace Application
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IHandler<CreateHistoryCommand>, HistoryHandler>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IHistoryRepository, HistoryRepository>();
@@ -33,9 +32,12 @@ namespace Application
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductQuery, ProductRepository>();
             services.AddMediatR((cfg) => {
-                            cfg.RegisterServicesFromAssembly(Assembly.Load("Domain"));
-                            cfg.RegisterServicesFromAssembly(Assembly.Load("Infra"));
-                            });
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var assembly in assemblies)
+                {
+                    cfg.RegisterServicesFromAssemblies(assembly);
+                }
+            });
             return services;
         }
     }

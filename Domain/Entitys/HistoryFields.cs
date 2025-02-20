@@ -29,5 +29,9 @@ namespace Domain.Entitys
         public History History { get; set; }
         public DateTime Date { get; set; } = DateTime.Now;
 
+        public override Entity Clone()
+        {
+            return new HistoryField(HistoryId, UserId, Action, FieldName, CurrentValue, PreviousValue);
+        }
     }
 }

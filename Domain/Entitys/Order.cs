@@ -35,5 +35,14 @@ namespace Domain.Entitys
 
         public void SetId(int id) => Id = id;
 
+        public override Entity Clone()
+        {
+            var itens = new List<OrderItem>();
+            foreach (var item in Itens)
+            {
+                itens.Add(new OrderItem(item.Product, item.Quantity));
+            }
+            return new Order(itens, ClientId);
+        }
     }
 }

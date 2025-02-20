@@ -11,7 +11,7 @@ namespace Domain.Entitys
         public string Name { get; private set; }
         public string Email { get; private set; }
         public string Phone { get; private set; }
-        public List<Order> Orders { get; private set; }
+        public List<Order> Orders { get; private set; } = new List<Order>();
         public int StockId { get; private set; }
         public Stock Stock { get; private set; }
 
@@ -21,5 +21,8 @@ namespace Domain.Entitys
             Email = email;
             Phone = phone;
         }
+
+        public override Client Clone() => new Client(Name, Email, Phone);
+        
     }
 }
