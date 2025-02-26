@@ -6,6 +6,13 @@ namespace Api.FIlters
 {
     public class GlobalExceptionFilter : IExceptionFilter
     {
+        private readonly ILogger<GlobalExceptionFilter> _logger;
+
+        public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> logger)
+        {
+            _logger = logger;
+        }
+
         public void OnException(ExceptionContext context)
         {
             var statusCode = context.Exception switch
@@ -29,6 +36,12 @@ namespace Api.FIlters
             context.Result = new ObjectResult(
                     new ResultService<Object>(false, "Falha na requisição", msg)
                 );
+
+            var eventID = new EventId(context.Exception.HResult, context.Exception.GetType().Name);
+
+            _logger.LogError(eventID, context.Exception, context.Exception.Message);
+
+
         }
     }
 }

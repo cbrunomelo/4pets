@@ -1,11 +1,13 @@
 ﻿using Application.Services;
 using Application.Services.Contracts;
+using DnsClient.Internal;
 using Domain.Commands.HistoryCommands;
 using Domain.Handlers;
 using Domain.Handlers.Contracts;
 using Domain.Queries;
 using Domain.Queries.CategoryQuerys;
 using Domain.Repository;
+using Infra.Logger;
 using Infra.Repositorys;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -31,6 +33,7 @@ namespace Application
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductQuery, ProductRepository>();
+            services.AddSingleton<ILoggerRepo, LoggerRepo>();
             services.AddMediatR((cfg) => {
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
                 foreach (var assembly in assemblies)
