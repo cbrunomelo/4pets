@@ -21,7 +21,7 @@ builder.Services
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddSingleton<ILoggerProvider>(provider =>
 {
     var config = new CustomLoggerProviderConfiguration(/* Passe as configurações necessárias */);
@@ -34,7 +34,7 @@ builder.Services.AddSingleton<ILoggerProvider>(provider =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DevelopmentDocker"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();

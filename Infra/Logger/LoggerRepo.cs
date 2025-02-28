@@ -6,11 +6,17 @@ namespace Infra.Logger;
 
 public class LoggerRepo : ILoggerRepo
 {
-    public Task Create(object log)
-    {
-        var connectionString = "mongodb://localhost:27017";
+    private readonly string _connectionString;
 
-        var client = new MongoClient(connectionString);
+    public LoggerRepo(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+
+    public Task Create(object log)
+    {     
+
+        var client = new MongoClient(_connectionString);
 
         var database = client.GetDatabase("Logger");
 
