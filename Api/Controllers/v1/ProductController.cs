@@ -34,6 +34,7 @@ public class ProductController : ControllerBase
         int pageSize = 10
         )
     {
+        throw new Exception();
         var pag = new PaginacaoDto(page, pageSize);
         string token = "";
         int userId = token.GetUserId();
@@ -48,7 +49,7 @@ public class ProductController : ControllerBase
     public ActionResult<IResultService<ProductDto>> Get(
         [FromRoute] int id
         )
-    {
+    {     
         string token = "";
         int userId = token.GetUserId();
         var result = _productService.GetById(id, userId);

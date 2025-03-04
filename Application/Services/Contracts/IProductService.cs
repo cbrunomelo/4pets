@@ -2,7 +2,7 @@
 using Application.Messaging;
 
 namespace Application.Services.Contracts;
-internal interface IProductService
+public interface IProductService
 {
     IResultService<IEnumerable<ProductDto>> GetAll(PaginacaoDto pag);
     Task<IResultService<ProductDto>> Create(ProductDto product, int userId);
