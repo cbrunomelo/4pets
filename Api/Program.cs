@@ -34,13 +34,13 @@ builder.Services.AddSingleton<ILoggerProvider>(provider =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DevelopmentDocker"))
-{
+//if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DevelopmentDocker"))
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
