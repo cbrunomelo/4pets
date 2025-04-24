@@ -1,0 +1,95 @@
+@startuml 4Pets Domain
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+abstract class Entity {
+    # Id: int
+    # Status: EStatus
+    + History: History
+    # HistoryId: int
+    + {abstract} Clone(): Entity
+}
+
+class Product {
+    - Name: string
+    - Price: decimal
+    - Description: string
+    - CategoryId: int?
+    + SetCategory(category: Category): void
+    + SetId(id: int): void
+    + Update(name: string, price: decimal, description: string, categoryId: int): void
+    + Clone(): Entity
+}
+
+class Order {
+    - Date: DateTime
+    - Total: decimal
+    - ClientId: int
+    + AddItem(item: OrderItem): void
+    + CalculateTotal(): void
+}
+
+class OrderItem {
+    - Quantity: int
+    - Price: decimal
+    - ProductId: int
+    - OrderId: int
+}
+
+class Category {
+    - Name: string
+    - Description: string
+}
+
+class Stock {
+    - Quantity: int
+    - ProductId: int
+}
+
+class Client {
+    - Name: string
+    - Email: string
+    - Phone: string
+}
+
+class History {
+    - Date: DateTime
+    - UserId: int
+    - Action: string
+    - Changes: HistoryFields
+}
+
+class HistoryFields {
+    - OldValue: string
+    - NewValue: string
+    - Field: string
+}
+
+enum EStatus {
+    Active
+    Inactive
+    Deleted
+}
+
+' Relacionamentos
+Entity <|-- Product
+Entity <|-- Order
+Entity <|-- Category
+Entity <|-- Stock
+Entity <|-- Client
+
+Entity "1" *-- "1" History
+History "1" *-- "*" HistoryFields
+
+Product "1" *-- "1" Stock
+Product "1" o-- "1" Category
+Product "1" -- "*" OrderItem
+
+Order "1" *-- "*" OrderItem
+Order "*" -- "1" Client
+
+@enduml 

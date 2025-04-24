@@ -1,0 +1,133 @@
+@startuml 4Pets Commands and Handlers
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Interfaces
+interface ICommand {
+    + Validate(): bool
+}
+
+interface IHandler<T> {
+    + Handle(command: T): Task<Result>
+}
+
+' Commands
+namespace ProductCommands {
+    class CreateProductCommand implements ICommand {
+        - Name: string
+        - Price: decimal
+        - Description: string
+        - CategoryId: int?
+        + Validate(): bool
+    }
+
+    class UpdateProductCommand implements ICommand {
+        - Id: int
+        - Name: string
+        - Price: decimal
+        - Description: string
+        - CategoryId: int?
+        + Validate(): bool
+    }
+
+    class DeleteProductCommand implements ICommand {
+        - Id: int
+        + Validate(): bool
+    }
+}
+
+namespace OrderCommands {
+    class CreateOrderCommand implements ICommand {
+        - ClientId: int
+        - Items: List<OrderItemCommand>
+        + Validate(): bool
+    }
+
+    class UpdateOrderCommand implements ICommand {
+        - Id: int
+        - Items: List<OrderItemCommand>
+        + Validate(): bool
+    }
+}
+
+namespace CategoryCommands {
+    class CreateCategoryCommand implements ICommand {
+        - Name: string
+        - Description: string
+        + Validate(): bool
+    }
+
+    class UpdateCategoryCommand implements ICommand {
+        - Id: int
+        - Name: string
+        - Description: string
+        + Validate(): bool
+    }
+}
+
+namespace StockCommands {
+    class UpdateStockCommand implements ICommand {
+        - ProductId: int
+        - Quantity: int
+        + Validate(): bool
+    }
+}
+
+' Handlers
+class ProductHandler implements IHandler {
+    + Handle(CreateProductCommand): Task<Result>
+    + Handle(UpdateProductCommand): Task<Result>
+    + Handle(DeleteProductCommand): Task<Result>
+}
+
+class OrderHandler implements IHandler {
+    + Handle(CreateOrderCommand): Task<Result>
+    + Handle(UpdateOrderCommand): Task<Result>
+}
+
+class CategoryHandler implements IHandler {
+    + Handle(CreateCategoryCommand): Task<Result>
+    + Handle(UpdateCategoryCommand): Task<Result>
+}
+
+class StockHandler implements IHandler {
+    + Handle(UpdateStockCommand): Task<Result>
+}
+
+' Domain Entities (simplified)
+class Product
+class Order
+class Category
+class Stock
+
+' Relacionamentos
+ProductHandler ..> Product : "Creates/Updates"
+OrderHandler ..> Order : "Creates/Updates"
+CategoryHandler ..> Category : "Creates/Updates"
+StockHandler ..> Stock : "Updates"
+
+ProductHandler ..> CreateProductCommand : "Handles"
+ProductHandler ..> UpdateProductCommand : "Handles"
+ProductHandler ..> DeleteProductCommand : "Handles"
+
+OrderHandler ..> CreateOrderCommand : "Handles"
+OrderHandler ..> UpdateOrderCommand : "Handles"
+
+CategoryHandler ..> CreateCategoryCommand : "Handles"
+CategoryHandler ..> UpdateCategoryCommand : "Handles"
+
+StockHandler ..> UpdateStockCommand : "Handles"
+
+' Agrupamento visual
+together {
+    class ProductHandler
+    class OrderHandler
+    class CategoryHandler
+    class StockHandler
+}
+
+@enduml 
