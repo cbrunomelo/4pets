@@ -5,7 +5,6 @@ using Application.Logger;
 using Infra.Logger;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 
 builder.Services

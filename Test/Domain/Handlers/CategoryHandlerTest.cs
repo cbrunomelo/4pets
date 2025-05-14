@@ -36,7 +36,8 @@ namespace Test.Domain.Handlers
             CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _mediator.Object);
 
             // Act
-            var result = await handler.Handle(command);
+            var ctn = new CancellationToken();
+            var result = await handler.Handle(command, ctn);
 
             // Assert
             Assert.True(result.Sucess);
@@ -52,7 +53,8 @@ namespace Test.Domain.Handlers
             CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _mediator.Object);
 
             // Act
-            var result = await handler.Handle(command);
+            var ctn = new CancellationToken();
+            var result = await handler.Handle(command, ctn);
 
             // Assert
             Assert.False(result.Sucess);
@@ -72,7 +74,8 @@ namespace Test.Domain.Handlers
             CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _mediator.Object);
 
             // Act
-            var result = await handler.Handle(command);
+            var ctn = new CancellationToken();
+            var result = await handler.Handle(command, ctn);
 
             // Assert
             Assert.False(result.Sucess);
@@ -91,7 +94,8 @@ namespace Test.Domain.Handlers
             CategoryHandler handler = new CategoryHandler(mockCategoryRepository.Object, _mediator.Object);
 
             // Act
-            var result = await handler.Handle(command);
+            var ctn = new CancellationToken();
+            var result = await handler.Handle(command, ctn);
 
             // Assert
             Assert.False(result.Sucess);

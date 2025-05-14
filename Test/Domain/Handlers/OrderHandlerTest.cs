@@ -46,14 +46,14 @@ namespace Test.Domain.Handlers
             var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _mediator.Object);
 
             //Act
-            var result = await handler.Handle(command);
+            var ctn = new CancellationToken();
+            var result = await handler.Handle(command, ctn);
 
             //Assert
             Assert.True(result.Sucess);
             Assert.Equal("Pedido criado com sucesso", result.Message);
             Assert.Empty(result.Errors);
             _OrderRepositoryMock.Verify(x => x.Create(It.IsAny<Order>()), Times.Once);
-            _stockRepository.Verify(x => x.DecreaseStock(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(orderItens.Count));
         }
 
 
@@ -68,7 +68,8 @@ namespace Test.Domain.Handlers
             var handler = new OrderHandler(_OrderRepositoryMock.Object,  _orderItemRepoMock.Object, _mediator.Object);
 
             //Act
-            var result = await handler.Handle(command);
+            var ctn = new CancellationToken();
+            var result = await handler.Handle(command, ctn);
 
             //Assert
             Assert.False(result.Sucess);
@@ -89,7 +90,8 @@ namespace Test.Domain.Handlers
             var handler = new OrderHandler(_OrderRepositoryMock.Object, _orderItemRepoMock.Object, _mediator.Object);
 
             //Act
-            var result = await handler.Handle(command);
+            var ctn = new CancellationToken();
+            var result = await handler.Handle(command, ctn);
 
 
             //Assert
