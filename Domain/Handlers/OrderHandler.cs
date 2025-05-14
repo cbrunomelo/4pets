@@ -3,6 +3,7 @@ using Domain.Commands.OrderCommands;
 using Domain.Entitys;
 using Domain.Entitys.Enuns;
 using Domain.Events;
+using Domain.Extensions;
 using Domain.Handlers.Contracts;
 using Domain.Repository;
 using Domain.Validation;
@@ -46,10 +47,12 @@ namespace Domain.Handlers
                 return new HandleResult("Não foi possível criar o pedido", "Erro interno");
 
             order.SetId(id);
-            
+
+            order.AddNotification(new OrderCreatedNotification<Order>(order));
+
             _mediator.Send(new CreateHistoryCommand(command, order, null, EHistoryAction.Insert));
 
-            _mediator.Publish(new OrderCreatedNotification<Order>(order));
+            _mediator.PublishAll(order);
 
             return new HandleResult(true, "Pedido criado com sucesso", order);
 
